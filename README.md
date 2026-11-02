@@ -34,7 +34,7 @@ Configurar en Supabase **Authentication → URL Configuration** la URL definitiv
 
 ## Implementado en código
 
-Mapa Leaflet, tres bases (OpenTopoMap, PNOA, OpenStreetMap), cuatro controles independientes, GPS y radio de precisión, pantalla completa, filtros de recorridos y las cinco categorías de marcadores. Diario con búsqueda, filtro por año y favoritas, dibujo manual con puntos intermedios, edición, rutas pendientes y conversión explícita a salida. Importación GPX con revisión y exportación, distancia geodésica sin duplicar GPX, objetivos anuales, actividad mensual, lugares, fotos privadas, asociación de foto a marcador, estados de guardado y borradores por cuenta. Previsión diaria real de Open-Meteo, con errores visibles y enlace a Windy.
+Mapa Leaflet, tres bases (OpenTopoMap, PNOA, OpenStreetMap), cuatro controles independientes, GPS y radio de precisión, pantalla completa, filtros de recorridos y las cinco categorías de marcadores. Diario con búsqueda, filtro por año y favoritas, trazado costero automático con puntos de paso, edición, rutas pendientes y conversión explícita a salida. Importación GPX con revisión y exportación, distancia geodésica sin duplicar GPX, objetivos anuales, actividad mensual, lugares, fotos privadas, asociación de foto a marcador, estados de guardado y borradores por cuenta. Previsión diaria real de Open-Meteo, con errores visibles y enlace a Windy.
 
 Práctica dirigida de 28 acciones reales, aislada de las escrituras de servidor: mapa, marcador, fotografía de ejemplo, asociación, tiempo, menú, guardar, editar, eliminar y deshacer. Retroceso por puntos de restauración, salida y conversión final a borrador real para revisión. Comienza después del login salvo preferencia “No mostrar de nuevo”; se puede reiniciar desde Ayuda y guía. La preferencia de la guía se recuerda por cuenta en este navegador; Preferencias permite guardarla también en la cuenta.
 
@@ -42,7 +42,7 @@ Miniaturas privadas, acceso al mar, borrador visible, validación de fichas, pro
 
 ## Pendiente, sin datos inventados
 
-- Geometría costera IDEIB verificada, trazado que siga esa costa, alternativa corta/larga, costa única y porcentaje pendiente. La edición actual muestra expresamente que el progreso costero no está disponible. El objetivo anual mide kilómetros paleados.
+- Alternativa corta/larga, costa única y porcentaje pendiente. El trazado costero usa ahora la geometría IDEIB/GOIB recuperada del proyecto anterior. La edición actual muestra expresamente que el progreso costero no está disponible. El objetivo anual mide kilómetros paleados.
 - Logo anterior de los dos palistas y la Jack Russell: no se ha recuperado; el icono actual es nuevo.
 - Condiciones recomendadas, ritmo y paradas; previsión de oleaje y comparativas entre años.
 - Sincronización automática de borradores entre dispositivos. Los borradores se conservan en el navegador de la cuenta y el guardado definitivo requiere conexión.
@@ -58,3 +58,9 @@ La ejecución local de Chromium está bloqueada por la política del entorno. La
 ## Servicios externos y atribución
 
 Leaflet 1.9.4 (unpkg), supabase-js 2.57.4 (esm.sh), fuentes DM Sans/Outfit (Google Fonts), OpenStreetMap, OpenTopoMap, IGN/PNOA y Open-Meteo. La cartografía conserva su atribución. El acceso depende de conectividad y disponibilidad de esos proveedores. Los recorridos y previsiones no garantizan navegabilidad.
+
+## Trazado costero
+
+Nueva salida y Planificar ruta ajustan los puntos a la costa principal de Menorca y guardan la polilínea costera completa. Los kilómetros se calculan sumando sus segmentos. Los puntos marcados se guardan aparte para poder quitar el último sin borrar vértices de la costa. No se añaden conectores rectos al cálculo. Se rechazan puntos a más de 1.500 m y puntos que coinciden en la costa. Un GPX se conserva salvo confirmación explícita de sustitución. Las salidas ya guardadas no se recalculan en segundo plano.
+
+Datos: IDEIB · GOIB / SITIBSA · MTIB 2012, escala 1:5.000; geometría simplificada a 2,5 m, 19.137 vértices y 19.136 aristas de la componente principal. Fuente: https://ideib.caib.es/geoserveis/rest/services/public/GOIB_MTIB5m2012_Me/MapServer. El cálculo usa el camino disponible más corto del grafo, sin inventar puentes entre tramos desconectados; no es una garantía de navegabilidad ni incorpora condiciones del mar.

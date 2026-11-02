@@ -23,6 +23,7 @@ jobs:
           node --check app.js
           node --check backend.js
           node --check core.js
+          node --check coastal.js
           npm ci --ignore-scripts
           npm test
       - uses: actions/setup-python@v5
@@ -42,7 +43,7 @@ jobs:
       - name: Preparar publicación
         run: |
           mkdir _site
-          cp index.html style.css app.js core.js backend.js icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
+          cp index.html style.css app.js core.js backend.js coastal.js coast-data.js icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
