@@ -9,7 +9,7 @@ server=http.server.ThreadingHTTPServer(('127.0.0.1',8081),functools.partial(http
 threading.Thread(target=server.serve_forever,daemon=True).start()
 rows=[{'id':'one','kind':'trip','title':'Nombre repetido','revision':1,'data':{'date':'2026-11-01','points':[[39.93805,3.93665],[39.93168,3.91459]],'source':'gpx','roundtrip':False,'photos':[{'id':'p','path':'private/test','name':'Mi fotografía'}],'markers':[],'duration':75,'estimatedMinutes':90,'notes':'Notas completas','conditions':'Mar tranquilo','rating':4,'parking':'Junto al acceso','customDetail':'Información adicional'}},
  {'id':'two','kind':'plan','title':'Nombre repetido','revision':1,'data':{'date':'2026-11-01','points':[[40.05,4.05],[40.07,4.12]],'source':'gpx','roundtrip':True,'photos':[],'markers':[],'estimatedMinutes':130,'notes':'Pendiente conservada'}},
- {'id':'invalid','kind':'trip','title':'Sin trazado','revision':1,'data':{'date':'2026-11-01','points':[],'photos':[],'markers':[],'notes':'Conservar la ficha sin geometría'}}]
+ {'id':'invalid','kind':'trip','title':'Sin trazado','revision':1,'data':{'date':'2026-11-01','points':[],'photos':[{'name':'Sin archivo'}],'markers':[],'notes':'Conservar la ficha sin geometría'}}]
 BACKEND='''let rows=SEED;
 export async function getClient(){return {auth:{getSession:async()=>({data:{session:{user:{id:'test-user',email:'test@example.invalid'}}}}),onAuthStateChange(){}}};}
 export async function loadEntries(){return structuredClone(rows);}
@@ -58,7 +58,7 @@ try:
    page.locator('#adventure-sheet [data-action=delete]').click();page.locator('#undo').click();open_adventure('one');assert 'Notas completas' in page.locator('#adventure-sheet').inner_text()
    open_adventure('two');assert page.locator('#adventure-panel').get_attribute('data-route-id')=='two';assert not page.locator('#adventure-image').is_visible();assert 'Pendiente conservada' in page.locator('#adventure-sheet').inner_text()
    page.locator('#adventure-sheet [data-action=complete]').click();assert page.locator('#real-duration').is_visible();page.locator('#close-editor').click();page.locator('#resume-draft').click();page.locator('#discard-draft').click()
-   open_adventure('invalid');assert 'Conservar la ficha' in page.locator('#adventure-sheet').inner_text();assert page.locator('#adventure-map-notice').is_visible()
+   open_adventure('invalid');assert 'Conservar la ficha' in page.locator('#adventure-sheet').inner_text();assert page.locator('#adventure-map-notice').is_visible();assert not page.locator('#adventure-image').is_visible()
    page.locator('#clear-selection').click();page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':230})
    page.wait_for_function("document.querySelector('#weather-result')?.textContent.includes('12 °C')")
    original_calls=len(requests);point=page.locator('.forecast-location').inner_text()
