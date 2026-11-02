@@ -25,7 +25,7 @@ jobs:
           node --check core.js
           node --check coastal.js
           npm ci --ignore-scripts
-          node --test tests/features.test.js tests/weather.test.js
+          node --test tests/days-adventure.test.js
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -34,18 +34,20 @@ jobs:
           pip install playwright==1.58.0
           python -m playwright install --with-deps chromium
       - name: Probar los flujos de interfaz con backend simulado
-        run: python tests/affected_browser.py
+        run: python tests/days_adventure_browser.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: pruebas-navegador
           path: tests/*.png
       - name: Consultar proveedores meteorológicos reales (solo lectura)
-        run: node tests/live-forecast.mjs
+        run: |
+          node tests/live-forecast.mjs
+          node tests/live-windy.mjs
       - name: Preparar publicación
         run: |
           mkdir _site
-          cp index.html style.css app.js core.js backend.js route-features.js forecast.js install.js sw.js icon-192.png icon-512.png coastal.js coast-data.js coast-progress.js logo.webp sup-pattern.svg icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
+          cp index.html style.css app.js core.js backend.js adventure.js windy.js route-features.js forecast.js install.js sw.js icon-192.png icon-512.png coastal.js coast-data.js coast-progress.js logo.webp sup-pattern.svg icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

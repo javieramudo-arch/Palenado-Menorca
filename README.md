@@ -86,3 +86,14 @@ El bloque de bienvenida se ha eliminado. Fondo SVG con patrón tenue de tablas, 
 - Colores y etiquetas unificados: realizada solo ida verde, realizada ida/vuelta naranja; cualquier pendiente azul, también en vista previa y fichas.
 
 Esta entrega ejecuta únicamente tests/features.test.js, tests/affected_browser.py y una consulta de solo lectura a los proveedores meteorológicos reales. No amplía la comprobación a otros flujos. Las pruebas de interfaz usan cuenta y previsión simuladas; el sondeo real se informa por separado en los logs como REAL_FORECAST. La instalación nativa y el tacto en un Android físico siguen requiriendo comprobación en dispositivo.
+
+
+## 0.5.0 · Días de previsión y aventura completa
+
+La previsión solicita hasta siete días horarios a cada proveedor. El selector recorre únicamente las fechas devueltas, con límites, Hoy y hora explícita en Europe/Madrid. Una sola respuesta por punto mantiene unidos día/hora/campos. Los datos ausentes no se sustituyen con los de otro día, y las horas pasadas no se presentan como actuales. Cambios rápidos usan una generación de render; nuevas consultas abortan e invalidan la anterior. Errores y reintento conservan el punto.
+
+Windy usa la inserción oficial https://embed.windy.com/embed2.html, con coordenadas, marcador y controles del iframe. Se mantiene su propio selector temporal, identificado expresamente: no se usan mensajes ni parámetros temporales no documentados para aparentar sincronía. La carga tiene límite de 12 segundos, error/reintento y enlace alternativo permanente. Por la política entre orígenes, un load del iframe no permite inspeccionar su contenido interno; si un bloqueo interno no emite error, la alternativa sigue visible.
+
+Ver aventura conserva foto → ficha completa → mapa en bloques independientes. La ficha enumera los campos guardados, campos adicionales, condiciones, estimación/tiempo real diferenciados, notas y marcadores. Acciones existentes por ID, sin identificar por nombre. En móvil la barra de acciones se mantiene dentro de los límites de la ficha y no cubre la imagen ni el mapa. Si no hay imagen se omite; si la geometría no es válida la ficha permanece y se avisa junto al mapa. El borrado/restauración de una ficha con geometría dañada permite únicamente el cambio lógico de estado conservando exactamente sus datos.
+
+Pruebas de esta entrega: solo tests/days-adventure.test.js y tests/days_adventure_browser.py, con datos/servicios simulados; sondas reales de Open-Meteo y del configurador/iframe oficiales de Windy por separado. No se modifican tablas ni datos existentes. La interacción interna real del iframe y un móvil físico se distinguen de las pruebas con iframe simulado.
