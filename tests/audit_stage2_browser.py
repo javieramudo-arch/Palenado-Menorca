@@ -15,7 +15,7 @@ try:
  with sync_playwright() as p:
   browser=p.chromium.launch()
   for width in [393,1280]:
-   page=browser.new_page(viewport={'width':width,'height':900});errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
+   context=browser.new_context(viewport={'width':width,'height':900},service_workers='block');page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
    page.route('**/backend.js*',lambda r:r.fulfill(body=BACKEND,content_type='text/javascript'))
    page.goto('http://127.0.0.1:8082/',wait_until='networkidle');page.wait_for_selector('#map.leaflet-container')
    page.locator('[data-tab=diario]').click();assert page.locator('#trip-list [data-action=detail]').count()==0
@@ -27,6 +27,6 @@ try:
    page.evaluate('failUpdate=false');page.locator('#new-password-form button').click();page.wait_for_function("!document.querySelector('#new-password-dialog').open");assert page.locator('#new-password-form [name=password]').input_value()==''
    page.goto('http://127.0.0.1:8082/?case=expired#error=access_denied&error_code=otp_expired',wait_until='networkidle');page.wait_for_selector('#retry-password-recovery');assert not page.locator('#new-password-dialog').is_visible();page.locator('#retry-password-recovery').click();assert page.locator('#request-password-dialog').is_visible()
    page.goto('http://127.0.0.1:8082/?case=recovery#type=recovery&access_token=simulated-token',wait_until='networkidle');page.wait_for_selector('#new-password-dialog[open]');page.evaluate('emitLogout()');assert not page.locator('#new-password-dialog').is_visible()
-   assert not errors,errors;page.close()
+   assert not errors,errors;context.close()
   browser.close();print('AUDIT_STAGE2_PASS: unified ID-based adventure, mobile/desktop; recovery request/error/retry, same-user recovery, password mismatch/update failure/retry, expired link. Auth/email simulated.',flush=True)
 finally:server.shutdown()
