@@ -1,0 +1,58 @@
+name: Comprobar y publicar Paleando Menorca
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Comprobar código y distancias
+        run: |
+          node --check app.js
+          node --check backend.js
+          node --check core.js
+          npm test
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar navegador de pruebas
+        run: |
+          pip install playwright==1.58.0
+          python -m playwright install --with-deps chromium
+      - name: Probar los flujos de interfaz con backend simulado
+        run: python tests/browser.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pruebas-navegador
+          path: tests/*.png
+      - name: Preparar publicación
+        run: |
+          mkdir _site
+          cp index.html style.css app.js core.js backend.js icon.svg .nojekyll _site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
