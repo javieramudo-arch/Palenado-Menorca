@@ -81,7 +81,9 @@ try:
   page.locator('#menu-button').click();page.locator('[data-menu=plans]').click();page.locator('#content-dialog [data-action=detail]').click();page.locator('[data-action=complete]').click()
   assert not page.locator('#plan-estimate').is_visible();assert page.locator('#real-duration').is_visible();assert page.locator('[name=duration]').input_value()=='';assert 'ida y vuelta' in page.locator('#route-type').inner_text()
   assert '#ad5c28' in page.locator('#route-type').get_attribute('style')
-  page.locator('#close-editor').click()
+  page.locator('[name=duration]').fill('80');page.locator('#save-entry').click()
+  assert page.locator('#trip-list .route-badge').filter(has_text='ida y vuelta').count()>=1
+  page.locator('#menu-button').click();page.locator('[data-menu=plans]').click();assert not page.locator('#content-dialog .card').count();page.locator('#content-dialog [data-close]').click()
   assert page.locator('#install-app').is_visible();page.locator('#install-app').click();assert 'Chrome' in page.locator('#content-body').inner_text() or 'Edge' in page.locator('#content-body').inner_text()
   page.locator('#content-dialog [data-close]').click()
   page.wait_for_function("navigator.serviceWorker.controller!==null")
