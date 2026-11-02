@@ -77,7 +77,7 @@ try:
   page.locator('#finish-draw').click();assert page.locator('[name=estimate]').input_value()==estimated
   page.locator('#save-entry').click();page.locator('#menu-button').click();page.locator('[data-menu=plans]').click();page.locator('#content-dialog [data-action=edit]').click()
   assert page.locator('[name=estimate]').input_value()==estimated
-  page.locator('#close-editor').click();page.locator('#resume-draft').click();page.on('dialog',lambda d:d.accept());page.locator('#discard-draft').click()
+  page.locator('#close-editor').click();page.locator('[data-tab=mapa]').click();page.locator('#resume-draft').click();page.on('dialog',lambda d:d.accept());page.locator('#discard-draft').click()
   page.locator('#menu-button').click();page.locator('[data-menu=plans]').click();page.locator('#content-dialog [data-action=detail]').click();page.locator('[data-action=complete]').click()
   assert not page.locator('#plan-estimate').is_visible();assert page.locator('#real-duration').is_visible();assert page.locator('[name=duration]').input_value()=='';assert 'ida y vuelta' in page.locator('#route-type').inner_text()
   assert '#ad5c28' in page.locator('#route-type').get_attribute('style')
