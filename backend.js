@@ -1,7 +1,8 @@
 export const SUPABASE_URL='https://akjuzerljejqkizpaotw.supabase.co';
 export const PUBLIC_KEY='sb_publishable_JjyME2UecEyod6Xjdv5LjA_ngpckbfH';
-let client;
-export async function getClient(){if(!client){const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.4');client=createClient(SUPABASE_URL,PUBLIC_KEY);}return client;}
+let clientPromise;
+export async function getClient(){if(!clientPromise)clientPromise=import('https://esm.sh/@supabase/supabase-js@2.57.4').then(({createClient})=>createClient(SUPABASE_URL,PUBLIC_KEY)).catch(error=>{clientPromise=null;throw error;});return clientPromise;}
+
 export async function loadEntries(){const c=await getClient();const rows=[];for(let offset=0;;offset+=500){const {data,error}=await c.from('entries').select('*').order('id',{ascending:true}).range(offset,offset+499);if(error)throw error;if(!Array.isArray(data))throw Error('El servidor no devolvió un diario válido.');rows.push(...data);if(data.length<500)return rows;}}
 export async function saveEntry(entry,userId){const c=await getClient();const row={id:entry.id,user_id:userId,kind:entry.kind,title:entry.title,data:entry.data,deleted_at:entry.deleted_at||null};let response;if(entry.revision){response=await c.from('entries').update(row).eq('id',entry.id).eq('revision',entry.revision).select().single();}else response=await c.from('entries').insert(row).select().single();if(response.error){const error=new Error(response.error.code==='PGRST116'?'Esta ficha cambió en otra sesión. Revisa las versiones antes de guardar.':response.error.message);error.code=response.error.code==='PGRST116'?'VERSION_CONFLICT':response.error.code;throw error;}return response.data;}
 export async function signedPhoto(path){const c=await getClient();const {data,error}=await c.storage.from('photos').createSignedUrl(path,300);if(error)throw error;return data.signedUrl;}
