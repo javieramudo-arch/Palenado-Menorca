@@ -26,6 +26,8 @@ Revisión de todos los archivos de la edición publicada: HTML, CSS, aplicación
 
 | Alta | La comprobación en vivo detectó HTML nuevo con JS antiguo desde caché | Referencias versionadas de CSS, aplicación y módulos para evitar mezclar versiones |
 
+| Alta | Chromium detectó fotos fuera del diálogo y el aviso de práctica sobre el menú | Desplazamiento interior de los diálogos y espacio reservado para el aviso; comprobación de las 28 acciones en dos tamaños |
+
 ## Seguridad de Supabase comprobada en el proyecto actual
 
 Consultas de solo lectura a catálogo y bucket, sin consultar contenido del diario:
