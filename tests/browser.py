@@ -25,10 +25,10 @@ try:
         browser=p.chromium.launch()
         page=browser.new_page(viewport={'width':1280,'height':1000})
         errors=[]
-        page.on('pageerror', lambda error: errors.append(str(error)))
+        page.on('pageerror', lambda error: (errors.append(str(error)),print('PAGE ERROR:',str(error),flush=True)))
         page.route('**/backend.js',lambda route:route.fulfill(body=BACKEND,content_type='text/javascript'))
         page.goto('http://127.0.0.1:8081/',wait_until='networkidle')
-        page.wait_for_selector('.leaflet-pane')
+        page.wait_for_selector('#map.leaflet-container')
         page.get_by_role('button',name='Capas',exact=True).click()
         assert page.locator('#layers').is_visible()
         assert page.locator('#layers input[data-layer]').count()==7
