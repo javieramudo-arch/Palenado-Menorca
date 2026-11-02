@@ -97,3 +97,16 @@ Windy usa la inserción oficial https://embed.windy.com/embed.html, con coordena
 Ver aventura conserva foto → ficha completa → mapa en bloques independientes. La ficha enumera los campos guardados, campos adicionales, condiciones, estimación/tiempo real diferenciados, notas y marcadores. Acciones existentes por ID, sin identificar por nombre. En móvil la barra de acciones se mantiene dentro de los límites de la ficha y no cubre la imagen ni el mapa. Si no hay imagen se omite; si la geometría no es válida la ficha permanece y se avisa junto al mapa. El borrado/restauración de una ficha con geometría dañada permite únicamente el cambio lógico de estado conservando exactamente sus datos.
 
 Pruebas de esta entrega: solo tests/days-adventure.test.js y tests/days_adventure_browser.py, con datos/servicios simulados; sondas reales de Open-Meteo y del configurador/iframe oficiales de Windy por separado. No se modifican tablas ni datos existentes. La interacción interna real del iframe y un móvil físico se distinguen de las pruebas con iframe simulado.
+
+## 0.6.0 · Estabilidad, ficha única y recuperación de cuenta
+
+- Un recorrido dañado se señala y puede repararse sin bloquear el diario ni perder sus otros campos.
+- Los conflictos permiten revisar campos, cargar el servidor o guardar una copia; nunca se fuerza una sobrescritura silenciosa.
+- Deshacer una foto o un marcador conserva los cambios posteriores del borrador.
+- Salir de la práctica limpia la consulta temporal del tiempo y restaura el estado anterior.
+- «Ver aventura», los recorridos del mapa y los lugares asociados abren la misma ficha por ID.
+- «He olvidado mi contraseña» solicita un enlace de Supabase y permite establecer una nueva contraseña tras validar la sesión de recuperación. Los fallos se pueden reintentar.
+
+Las pruebas de navegador usan Chromium con cuentas, almacenamiento y correos simulados. No certifican entrega de correo, actualización de contraseña en una cuenta real ni interacción en Android físico.
+
+La protección de contraseñas filtradas de Supabase requiere un plan Pro o superior. El proyecto utiliza Free: esta opción permanece pendiente y no se ha cambiado la facturación. Referencia: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
