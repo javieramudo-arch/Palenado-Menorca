@@ -128,7 +128,9 @@ try:
             select.select_option(photo_id)
             wait_step(10)
             guide_click('#close-editor',11)
-            guide_click('#weather-button',12)
+            page.locator('#weather-button').click()
+            page.locator('#map').click(position={'x':140,'y':250})
+            wait_step(12)
             guide_click('#content-dialog [data-close]',13)
             guide_click('#menu-button',{0:14,1:17,2:20}[menu_index])
             menu_index+=1
