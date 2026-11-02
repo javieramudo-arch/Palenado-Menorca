@@ -43,7 +43,7 @@ jobs:
       - name: Preparar publicación
         run: |
           mkdir _site
-          cp index.html style.css app.js core.js backend.js coastal.js coast-data.js icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
+          cp index.html style.css app.js core.js backend.js coastal.js coast-data.js coast-progress.js logo.webp sup-pattern.svg icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

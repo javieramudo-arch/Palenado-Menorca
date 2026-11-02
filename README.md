@@ -1,6 +1,6 @@
 # Paleando Menorca
 
-Diario personal de paddle surf. Nueva edición 0.2.1, creada desde cero con HTML, CSS y JavaScript. Sin Cloudflare, sin instalación y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
+Diario personal de paddle surf. Nueva edición 0.3.0, creada desde cero con HTML, CSS y JavaScript. Sin Cloudflare, sin instalación y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
 
 ## Publicación
 
@@ -42,8 +42,8 @@ Miniaturas privadas, acceso al mar, borrador visible, validación de fichas, pro
 
 ## Pendiente, sin datos inventados
 
-- Alternativa corta/larga, costa única y porcentaje pendiente. El trazado costero usa ahora la geometría IDEIB/GOIB recuperada del proyecto anterior. La edición actual muestra expresamente que el progreso costero no está disponible. El objetivo anual mide kilómetros paleados.
-- Logo anterior de los dos palistas y la Jack Russell: no se ha recuperado; el icono actual es nuevo.
+- Alternativa corta/larga. La costa única y el porcentaje ya se calculan como unión de intervalos de las aristas costeras de referencia. La barra principal muestra ese porcentaje, separado de los objetivos anuales.
+- La imagen original del logo anterior no está disponible. Se ha creado un logo nuevo inspirado en su descripción.
 - Condiciones recomendadas, ritmo y paradas; previsión de oleaje y comparativas entre años.
 - Sincronización automática de borradores entre dispositivos. Los borradores se conservan en el navegador de la cuenta y el guardado definitivo requiere conexión.
 
@@ -64,3 +64,14 @@ Leaflet 1.9.4 (unpkg), supabase-js 2.57.4 (esm.sh), fuentes DM Sans/Outfit (Goog
 Nueva salida y Planificar ruta ajustan los puntos a la costa principal de Menorca y guardan la polilínea costera completa. Los kilómetros se calculan sumando sus segmentos. Los puntos marcados se guardan aparte para poder quitar el último sin borrar vértices de la costa. No se añaden conectores rectos al cálculo. Se rechazan puntos a más de 1.500 m y puntos que coinciden en la costa. Un GPX se conserva salvo confirmación explícita de sustitución. Las salidas ya guardadas no se recalculan en segundo plano.
 
 Datos: IDEIB · GOIB / SITIBSA · MTIB 2012, escala 1:5.000; geometría simplificada a 2,5 m, 19.137 vértices y 19.136 aristas de la componente principal. Fuente: https://ideib.caib.es/geoserveis/rest/services/public/GOIB_MTIB5m2012_Me/MapServer. El cálculo usa el camino disponible más corto del grafo, sin inventar puentes entre tramos desconectados; no es una garantía de navegabilidad ni incorpora condiciones del mar.
+
+
+## 0.3 · Costa única y diseño compacto
+
+La cabecera separa kilómetros paleados, costa total de referencia y costa única recorrida. La barra mide el porcentaje de costa única, no el objetivo anual. El total se calcula desde las aristas únicas de la componente principal: actualmente unos 356,39 km en esta geometría detallada; no es una longitud oficial universal ni incluye todos los islotes.
+
+Los recorridos costeros se convierten en intervalos sobre aristas. Se unen los solapamientos entre salidas y recorridos en ambos sentidos. Los fragmentos de arista se cuentan proporcionalmente y no como aristas completas. Ida y vuelta duplica el paleado pero no la cobertura. Eliminar y restaurar recalcula desde las salidas activas; las pendientes y la práctica no alteran el progreso real.
+
+Para GPX se acredita únicamente costa paralela a los segmentos y a menos de 75 m: es una estimación cartográfica, no un trazado costero inferido entre extremos. Los recorridos antiguos sin coincidencias mantienen su distancia paleada y avisan de que no aportan cobertura. No se reescriben datos antiguos.
+
+El bloque de bienvenida se ha eliminado. Fondo SVG con patrón tenue de tablas, palas y olas. Logo nuevo generado a partir de la descripción de los dos palistas y la Jack Russell; no se ha recuperado la imagen original. Objetivos anuales conservados en Progreso, independientes de la barra costera.

@@ -56,6 +56,13 @@ try:
         assert page.locator('#trip-list h3').inner_text()=='Salida <segura>'
         assert not page.locator('#trip-list segura').count()
         initial=page.locator('#total-km').inner_text()
+        coast_initial=page.locator('#coast-covered').inner_text()
+        assert coast_initial!='0'
+        def es_number(text): return float(text.replace('.','').replace(',','.'))
+        assert abs(es_number(initial)-2*es_number(coast_initial))<.03
+        assert not page.locator('.welcome').count()
+        assert page.locator('.brand img').get_attribute('src')=='./logo.webp'
+        assert 'COSTA DE MENORCA' in page.locator('.stat-heading h2').inner_text()
         assert initial!='0'
         page.locator('#trip-list [data-action=edit]').click()
         page.locator('#entry-form [name=title]').fill('Macarella al amanecer')
@@ -68,8 +75,11 @@ try:
         page.on('dialog',lambda dialog:dialog.accept())
         page.locator('#content-dialog [data-action=delete]').click()
         assert page.locator('#total-km').inner_text()=='0'
+        assert page.locator('#coast-covered').inner_text()=='0'
+        assert page.locator('.energy-track').get_attribute('aria-valuenow')=='0.0000'
         page.locator('#undo').click()
         assert page.locator('#total-km').inner_text()==initial
+        assert page.locator('#coast-covered').inner_text()==coast_initial
         page.locator('[data-tab=mapa]').click()
         page.locator('#plan-button').click()
         coastal_click(39.93805,3.93665)
@@ -78,12 +88,15 @@ try:
         page.locator('#entry-form [name=title]').fill('Ruta para mañana')
         page.locator('#save-entry').click()
         assert page.locator('#total-km').inner_text()==initial
+        assert page.locator('#coast-covered').inner_text()==coast_initial
         page.locator('[data-tab=mapa]').click()
         page.locator('#guide-button').click()
         page.locator('[data-action=practice]').click()
         assert page.locator('#total-km').inner_text()==initial
+        assert page.locator('#coast-covered').inner_text()==coast_initial
         page.locator('#exit-practice').click()
         assert page.locator('#total-km').inner_text()==initial
+        assert page.locator('#coast-covered').inner_text()==coast_initial
         # Exercise every guided action in a real rendering engine at desktop and mobile sizes.
         page.route('https://api.open-meteo.com/**',lambda route:route.fulfill(content_type='application/json',body=json.dumps({'daily':{'time':['2026-11-03'],'temperature_2m_min':[15],'temperature_2m_max':[21],'wind_speed_10m_max':[12],'wind_gusts_10m_max':[18]}})))
         for viewport in [{'width':1280,'height':1000},{'width':393,'height':851}]:
@@ -140,10 +153,13 @@ try:
             page.locator('#undo').click()
             page.wait_for_selector('#practice-finish')
             assert page.locator('#total-km').inner_text()==initial
+            assert page.locator('#coast-covered').inner_text()==coast_initial
             page.locator('#practice-discard').click()
             assert page.locator('#total-km').inner_text()==initial
+            assert page.locator('#coast-covered').inner_text()==coast_initial
             assert not page.locator('#practice-banner').is_visible()
         assert not errors, errors
+        page.set_viewport_size({'width':1280,'height':1000})
         page.screenshot(path=str(ROOT/'tests'/'desktop.png'),full_page=True)
         page.set_viewport_size({'width':393,'height':851})
         assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
