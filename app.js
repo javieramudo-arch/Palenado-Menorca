@@ -1,5 +1,5 @@
-import {categories,symbols,escapeHtml as esc,validPoint,tripKm,aggregate,parseGPX,exportGPX,number,today,validateEntry} from './core.js';
-import {getClient,loadEntries,saveEntry,signedPhoto,uploadPhoto} from './backend.js';
+import {categories,symbols,escapeHtml as esc,validPoint,tripKm,aggregate,parseGPX,exportGPX,number,today,validateEntry} from './core.js?v=0.2.0';
+import {getClient,loadEntries,saveEntry,signedPhoto,uploadPhoto} from './backend.js?v=0.2.0';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let entries=[],user=null,map,base,groups={},draft=null,drawLayer,locationLayer,mode=null,tab='mapa',loading=false,saving=false,practice=null,undoEntry=null,toastTimer,undoTimer,weatherRequest=0,importQueue=[];
 const visible=e=>!e.deleted_at;const active=kind=>entries.filter(e=>visible(e)&&e.kind===kind);const draftKey=()=>`paleando:0.1:draft:${user?.id||'guest'}`;

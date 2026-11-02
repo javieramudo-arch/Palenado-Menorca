@@ -24,6 +24,8 @@ Revisión de todos los archivos de la edición publicada: HTML, CSS, aplicación
 | Media | Faltaba un dato habitual de la salida | Acceso al mar opcional, conservado al editar y visible en la ficha |
 | Baja | La aplicación carecía de manifiesto | Manifiesto con rutas relativas compatibles con GitHub Pages, sin añadir caché persistente |
 
+| Alta | La comprobación en vivo detectó HTML nuevo con JS antiguo desde caché | Referencias versionadas de CSS, aplicación y módulos para evitar mezclar versiones |
+
 ## Seguridad de Supabase comprobada en el proyecto actual
 
 Consultas de solo lectura a catálogo y bucket, sin consultar contenido del diario:
