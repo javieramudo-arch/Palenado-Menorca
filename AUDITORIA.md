@@ -55,3 +55,8 @@ Pendientes que no deben presentarse como verificados: login y subida con una cue
 - Catálogo de políticas y asesores del proyecto Supabase `akjuzerljejqkizpaotw` consultados el 02/11/2026.
 - Sesiones: https://supabase.com/docs/reference/javascript/auth-onauthstatechange
 - Paginación: https://supabase.com/docs/reference/javascript/range
+
+
+### Actualización 0.3.0
+
+El cálculo de costa única y la barra de porcentaje ya se implementan sobre la componente principal de la geometría IDEIB recuperada. Se unen intervalos parciales de aristas entre salidas activas, sin duplicar regresos ni repeticiones. GPX tiene cobertura estimada por proximidad y dirección (75 m). El trazado costero automático ya estaba incorporado en la versión precedente. Las limitaciones históricas de la sección anterior quedan sustituidas por este estado. Siguen pendientes la validación física en Android y las comprobaciones de cuenta real.
