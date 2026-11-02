@@ -9,3 +9,19 @@ export function parseGPX(text,Parser=globalThis.DOMParser){const doc=new Parser(
 export function exportGPX(entry){const esc=s=>String(s).replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&apos;'}[c]));let points=entry.data.points;if(entry.data.roundtrip&&entry.data.source!=='gpx')points=[...points,...points.slice(0,-1).reverse()];return `<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Paleando Menorca" xmlns="http://www.topografix.com/GPX/1/1"><trk><name>${esc(entry.title)}</name><trkseg>${points.map(p=>`<trkpt lat="${p[0]}" lon="${p[1]}"></trkpt>`).join('')}</trkseg></trk></gpx>`;}
 export const number=n=>new Intl.NumberFormat('es-ES',{maximumFractionDigits:2}).format(n);
 export const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+
+// Validate persisted and locally recovered records before they can affect the UI.
+export function validateEntry(e){
+ if(!e||!['trip','plan','place','goal','preferences'].includes(e.kind)||typeof e.title!=='string'||!e.title.trim()||e.title.length>180||!e.data||typeof e.data!=='object')throw Error('La ficha no es válida. Revisa su nombre y sus datos.');
+ const d=e.data;
+ if(['trip','plan'].includes(e.kind)){
+  if(!Array.isArray(d.points)||d.points.length<2||d.points.length>50000||!d.points.every(validPoint)||distance(d.points)<=.01)throw Error('El recorrido necesita al menos dos puntos distintos y válidos.');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d.date||'')||new Date(d.date+'T12:00:00Z').toISOString().slice(0,10)!==d.date)throw Error('Revisa la fecha de la salida.');
+  if(d.duration!==''&&d.duration!=null&&(!Number.isFinite(Number(d.duration))||Number(d.duration)<0||Number(d.duration)>10000))throw Error('La duración debe estar entre 0 y 10.000 minutos.');
+  if(d.rating!==''&&d.rating!=null&&(!Number.isInteger(Number(d.rating))||Number(d.rating)<1||Number(d.rating)>5))throw Error('La valoración debe estar entre 1 y 5.');
+  for(const m of d.markers||[])if(!validPoint(m.point)||!categories[m.category]||typeof m.title!=='string')throw Error('Hay un marcador que necesita revisión.');
+ }
+ if(e.kind==='place'&&(!validPoint(d.point)||!categories[d.category]))throw Error('Revisa la ubicación y la categoría del lugar.');
+ if(e.kind==='goal'&&(!Number.isFinite(Number(d.target))||Number(d.target)<1||Number(d.target)>100000))throw Error('El objetivo debe estar entre 1 y 100.000 km.');
+ return e;
+}
