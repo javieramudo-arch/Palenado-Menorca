@@ -1,6 +1,6 @@
 # Paleando Menorca
 
-Diario personal de paddle surf. Nueva edición 0.2.0, creada desde cero con HTML, CSS y JavaScript. Sin Cloudflare, sin instalación y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
+Diario personal de paddle surf. Nueva edición 0.2.1, creada desde cero con HTML, CSS y JavaScript. Sin Cloudflare, sin instalación y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
 
 ## Publicación
 

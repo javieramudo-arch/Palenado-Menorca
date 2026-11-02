@@ -1,4 +1,4 @@
-# Auditoría de Paleando Menorca · 0.2.0
+# Auditoría de Paleando Menorca · 0.2.1
 
 Fecha: 2 de noviembre de 2026. Base revisada: `1cc2d19d9c451dd85c53c79654e1bb648df2b066`.
 
