@@ -34,8 +34,14 @@ try:
   page.route('https://api.open-meteo.com/**',forecast);page.route('https://marine-api.open-meteo.com/**',forecast)
   page.route('https://embed.windy.com/**',lambda r:r.fulfill(body='<html><body><p>Windy iframe simulated</p></body></html>',content_type='text/html'))
   page.goto('http://127.0.0.1:8081/',wait_until='networkidle');page.wait_for_selector('#map.leaflet-container')
+  def open_adventure(identifier):
+   page.locator('[data-tab=diario]').click()
+   button=page.locator(f'#trip-list [data-action=view-adventure][data-id="{identifier}"]')
+   if button.count():button.click()
+   else:
+    page.locator('#menu-button').click();page.locator('[data-menu=plans]').click();page.locator(f'#content-dialog [data-action=view-adventure][data-id="{identifier}"]').click()
   for viewport in [{'width':1280,'height':1000},{'width':393,'height':851}]:
-   page.set_viewport_size(viewport);page.locator('[data-tab=diario]').click();page.locator('[data-action=view-adventure][data-id=one]').click()
+   page.set_viewport_size(viewport);open_adventure('one')
    assert page.locator('#adventure-panel').get_attribute('data-route-id')=='one';assert page.locator('#adventure-image').is_visible()
    page.wait_for_function("document.querySelector('#adventure-image img').naturalWidth>0")
    text=page.locator('#adventure-sheet').inner_text();assert all(s in text for s in ['Notas completas','Mar tranquilo','Aparcamiento','Información adicional','Duración real','Duración estimada','1 h 15 min','1 h 30 min'])
@@ -45,8 +51,8 @@ try:
    bounds=page.evaluate('(points)=>points.map(x=>{const p=testMap.latLngToContainerPoint(x);return [p.x,p.y,testMap.getSize().x,testMap.getSize().y]})',rows[0]['data']['points'])
    for x,y,w,h in bounds:assert 20<=x<=w-75 and 40<=y<=h-40,(x,y,w,h)
    action=page.locator('#adventure-sheet .adventure-actions').bounding_box();map_box=page.locator('#map-wrap').bounding_box();assert action['y']+action['height']<=map_box['y']
-   page.locator('[data-tab=diario]').click();page.locator('[data-action=view-adventure][data-id=two]').click();assert page.locator('#adventure-panel').get_attribute('data-route-id')=='two';assert not page.locator('#adventure-image').is_visible();assert 'Pendiente conservada' in page.locator('#adventure-sheet').inner_text()
-   page.locator('[data-tab=diario]').click();page.locator('[data-action=view-adventure][data-id=invalid]').click();assert 'Conservar la ficha' in page.locator('#adventure-sheet').inner_text();assert page.locator('#adventure-map-notice').is_visible()
+   open_adventure('two');assert page.locator('#adventure-panel').get_attribute('data-route-id')=='two';assert not page.locator('#adventure-image').is_visible();assert 'Pendiente conservada' in page.locator('#adventure-sheet').inner_text()
+   open_adventure('invalid');assert 'Conservar la ficha' in page.locator('#adventure-sheet').inner_text();assert page.locator('#adventure-map-notice').is_visible()
    page.locator('#clear-selection').click();page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':230})
    page.wait_for_function("document.querySelector('#weather-result')?.textContent.includes('12 °C')")
    original_calls=len(requests);point=page.locator('.forecast-location').inner_text()
@@ -67,14 +73,14 @@ try:
   # Error/retry resets data and retains the selected coordinates.
   fail[0]=True;page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':230});page.get_by_role('button',name='Reintentar previsión').wait_for();assert '12 °C' not in page.locator('#weather-result').inner_text();fail[0]=False;page.get_by_role('button',name='Reintentar previsión').click();page.wait_for_function("document.querySelector('#weather-result').textContent.includes('12 °C')");page.locator('#content-dialog [data-close]').click()
   # Existing sheet actions use the original ID and normal handlers.
-  page.locator('[data-tab=diario]').click();page.locator('[data-action=view-adventure][data-id=one]').click()
+  open_adventure('one')
   page.locator('#adventure-sheet [data-photo]').click();page.wait_for_selector('.photo-view');page.locator('#content-dialog [data-close]').click()
   with page.expect_download() as event:page.locator('#adventure-sheet [data-action=export]').click()
   assert 'one' in event.value.suggested_filename
   page.locator('#adventure-sheet [data-action=edit]').click();page.locator('[name=title]').fill('Nombre editado');page.locator('#save-entry').click();page.locator('[data-action=view-adventure][data-id=one]').click();assert 'Nombre editado' in page.locator('#adventure-sheet h2').inner_text()
-  page.on('dialog',lambda d:d.accept());page.locator('#adventure-sheet [data-action=delete]').click();assert not page.locator('#adventure-panel').is_visible();page.locator('#undo').click();page.locator('[data-tab=diario]').click();page.locator('[data-action=view-adventure][data-id=one]').click();assert 'Nombre editado' in page.locator('#adventure-sheet h2').inner_text()
-  page.locator('[data-tab=diario]').click();page.locator('[data-action=view-adventure][data-id=two]').click();page.locator('#adventure-sheet [data-action=complete]').click();page.locator('[name=duration]').fill('110');page.locator('#save-entry').click();page.locator('[data-action=view-adventure][data-id=two]').click();assert 'Realizada' in page.locator('#adventure-sheet').inner_text();assert '1 h 50 min' in page.locator('#adventure-sheet').inner_text()
-  page.locator('[data-tab=diario]').click();page.locator('[data-action=view-adventure][data-id=invalid]').click();page.locator('#adventure-sheet [data-action=delete]').click();assert not page.locator('#adventure-panel').is_visible();page.locator('#undo').click();page.locator('[data-tab=diario]').click();page.locator('[data-action=view-adventure][data-id=invalid]').click();assert 'Conservar la ficha sin geometría' in page.locator('#adventure-sheet').inner_text()
+  page.on('dialog',lambda d:d.accept());page.locator('#adventure-sheet [data-action=delete]').click();assert not page.locator('#adventure-panel').is_visible();page.locator('#undo').click();open_adventure('one');assert 'Nombre editado' in page.locator('#adventure-sheet h2').inner_text()
+  open_adventure('two');page.locator('#adventure-sheet [data-action=complete]').click();page.locator('[name=duration]').fill('110');page.locator('#save-entry').click();page.locator('[data-action=view-adventure][data-id=two]').click();assert 'Realizada' in page.locator('#adventure-sheet').inner_text();assert '1 h 50 min' in page.locator('#adventure-sheet').inner_text()
+  open_adventure('invalid');page.locator('#adventure-sheet [data-action=delete]').click();assert not page.locator('#adventure-panel').is_visible();page.locator('#undo').click();open_adventure('invalid');assert 'Conservar la ficha sin geometría' in page.locator('#adventure-sheet').inner_text()
   assert not errors,errors;assert page.evaluate('document.documentElement.scrollWidth<=innerWidth');page.screenshot(path=str(ROOT/'tests'/'days-adventure-mobile.png'),full_page=True)
   print('DAYS_ADVENTURE_BROWSER_PASS: day/hour/limits/Today/rapid navigation, point retained, missing values and retry; official iframe rendering simulated plus error fallback; ID/photo-sheet-map flow, framing and sheet actions desktop/mobile; account/photo/forecast/Windy simulated',flush=True)
   browser.close()
