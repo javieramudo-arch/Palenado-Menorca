@@ -54,6 +54,7 @@ try:
    general=page.locator('#meteo-map-hours').get_attribute('data-time');page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':100});page.wait_for_selector('#meteo-dialog[open]');page.locator('#wind-day').select_option(index=3);assert page.locator('#meteo-map-hours').get_attribute('data-time')==general;page.locator('#meteo-dialog [data-close]').click();page.wait_for_function('meteoTest.state().weatherReturn===null');assert page.locator('.meteo-map-control').is_visible()
    page.locator('#new-button').click();previous=page.evaluate('meteoTest.state()');page.locator('#meteo-map-hours').focus();page.locator('#meteo-map-hours').press('ArrowRight');assert page.evaluate('meteoTest.state()')==previous
    page.locator('#weather-button').click();page.locator('#cancel-draw').click();assert page.evaluate('meteoTest.state().draft')==previous['draft'];assert page.locator('.meteo-map-control').is_visible()
+   hint=page.locator('#map-hint').bounding_box();pill=page.locator('#meteo-map-date').bounding_box();assert hint['y']+hint['height']<pill['y']
    page.screenshot(path=str(ROOT/f'tests/timeline-{width}.png'));page.locator('.meteo-map-control').screenshot(path=str(ROOT/f'tests/ruler-{width}.png'));
    if width==393:
     import base64
