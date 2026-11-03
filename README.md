@@ -132,3 +132,7 @@ Comprobación específica: Chromium en tamaños móvil y escritorio con meteorol
 
 ## 0.8.1 · Línea temporal general permanente
 Franja mínima de ancho completo en el borde inferior del mapa: dirección y velocidad en el centro del encuadre, fecha/hora, play y pausa separados y deslizador desde ahora hasta 48 horas, limitado por la disponibilidad real. Siempre visible sin seleccionar un punto ni abrir Meteo. Cambiar el punto o el día del Meteo detallado no cambia esta línea temporal general. Sin manga, rachas, explicaciones ni botones extra en el mapa.
+
+## 0.9.0 · Regla temporal de mar
+
+Hora fija centrada sobre una etiqueta turquesa y guía vertical. La escala inferior se desliza con días alternados y marcas horarias; arrastrar o tocar selecciona una hora disponible y pausa la reproducción. Play y pausa siguen separados. La regla conserva el horizonte de 48 horas, la independencia de Meteo y los datos existentes. El movimiento suave respeta movimiento reducido. Los tramos anteriores a la hora inicial se dibujan atenuados como contexto visual y no pueden seleccionarse.

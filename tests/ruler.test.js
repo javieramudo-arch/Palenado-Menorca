@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {rulerIndex,rulerOffset} from '../time-ruler.js';
+test('scrub selects actual available hours and clamps both edges',()=>{const t=[1000,1800,5400,9000];assert.equal(rulerIndex(t,-500),0);assert.equal(rulerIndex(t,99999),3);assert.equal(rulerIndex(t,5300),2);assert.equal(rulerIndex([],5300),-1);});
+test('scale follows elapsed time across midnight and fractional starting hour',()=>{const a=Date.parse('2026-11-03T22:25:00Z')/1000;assert.equal(rulerOffset(a,a,24),0);assert.equal(rulerOffset(a+3600,a,24),24);assert.equal(rulerOffset(a+48*3600,a,36),1728);assert.equal(rulerOffset(a-1800,a,24),-12);});

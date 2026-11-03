@@ -1,7 +1,7 @@
 name: Comprobar y publicar Paleando Menorca
 on:
   push:
-    branches: [main, timeline-081]
+    branches: [main, ruler-090]
   workflow_dispatch:
 permissions:
   contents: read
@@ -27,8 +27,9 @@ jobs:
           npm ci --ignore-scripts
           node --check password-recovery.js
           node --check wind-field.js
+          node --check time-ruler.js
           node --check journey-tools.js
-          node --test tests/audit-fixes.test.js tests/password-recovery.test.js tests/experience.test.js tests/timeline.test.js
+          node --test tests/audit-fixes.test.js tests/password-recovery.test.js tests/experience.test.js tests/timeline.test.js tests/ruler.test.js
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -53,7 +54,7 @@ jobs:
       - name: Preparar publicación
         run: |
           mkdir _site
-          cp index.html style.css app.js core.js backend.js wind-field.js journey-tools.js password-recovery.js edit-safety.js adventure.js windy.js route-features.js forecast.js install.js sw.js icon-192.png icon-512.png coastal.js coast-data.js coast-progress.js logo.webp sup-pattern.svg icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
+          cp index.html style.css app.js core.js backend.js time-ruler.js wind-field.js journey-tools.js password-recovery.js edit-safety.js adventure.js windy.js route-features.js forecast.js install.js sw.js icon-192.png icon-512.png coastal.js coast-data.js coast-progress.js logo.webp sup-pattern.svg icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
