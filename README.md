@@ -110,3 +110,13 @@ Pruebas de esta entrega: solo tests/days-adventure.test.js y tests/days_adventur
 Las pruebas de navegador usan Chromium con cuentas, almacenamiento y correos simulados. No certifican entrega de correo, actualización de contraseña en una cuenta real ni interacción en Android físico.
 
 La protección de contraseñas filtradas de Supabase requiere un plan Pro o superior. El proyecto utiliza Free: esta opción permanece pendiente y no se ha cambiado la facturación. Referencia: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
+
+## 0.7.0 · Viento y herramientas para salir al mar
+
+Viento general: malla de 20 puntos de Open-Meteo, horizonte de cuatro días, actualización de consulta cada 30 minutos. Las flechas usan el punto de malla más cercano y representan el desplazamiento del viento; no son mediciones en cada cala ni una simulación del relieve local. La fecha/hora se expresa en Europe/Madrid. «Consultada» identifica la descarga, no la hora de generación del modelo. La animación se detiene al ocultar el mapa o la pestaña y respeta movimiento reducido. Las rutas siguen por encima de la capa de viento.
+
+Fuente y condiciones: https://open-meteo.com/en/terms y https://open-meteo.com/en/docs . Uso personal no comercial, atribución Open-Meteo / CC BY 4.0. La API pública no tiene garantía de disponibilidad; las peticiones multipunto pueden computar como varias consultas. No se ha contratado ningún servicio. La comprobación de condiciones y respuesta real forma parte del proceso de publicación.
+
+Herramientas: repetir aventuras con ID nuevo y sin datos observados ni fotos; comparación de 2–4 rutas; previsión de salida, punto medio y llegada con horas estimadas; selección de tramos pendientes; filtros combinables; resúmenes que descuentan la costa recorrida antes del periodo; zona, acceso y coordenadas diferenciadas del aparcamiento. El GPX mantiene su recorrido completo. La previsión del perfil usa ritmo uniforme y distribuye paradas, y no determina navegabilidad.
+
+Los filtros se conservan mientras está abierta la app. Los nuevos campos son opcionales, sin migraciones. No se deduce una zona para registros antiguos. Las consultas fallidas ofrecen reintento y nunca convierten ausencias en cero. La sincronización distingue borrador local de datos guardados en cuenta.

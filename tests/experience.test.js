@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {repeatAdventure,filterTrips,periodSummary,routeSamples} from '../journey-tools.js';
+import {repeatAdventure,filterTrips,periodSummary,routeSamples,pendingRoute} from '../journey-tools.js';
 import {pendingCoast,coastProgress} from '../coast-progress.js';
 import {loadWind,windSample,windGrid} from '../wind-field.js';
 const e={id:'original',revision:3,kind:'trip',title:'Ruta',data:{date:'2026-11-01',points:[[40,4],[40,4.01]],source:'gpx',duration:45,wind:'fuerte',sea:'olas',photos:[{id:'p'}],markers:[{id:'m',photoId:'p'}],zone:'Sur',rating:4}};
@@ -8,3 +8,5 @@ test('filters combine fields and reject unknown zones and missing distance',()=>
 test('period discovery subtracts prior coverage',()=>{const a=periodSummary([e,{...e,id:'later',data:{...e.data,date:'2026-11-03',duration:''}}],'2026-11-03','2026-11-03',coastProgress);assert.equal(a.count,1);assert.equal(a.newCoastKm,0);assert.equal(a.missingDuration,1);assert.ok(pendingCoast([e]).length>0);});
 test('return route profile uses full distance and returns to departure',()=>{const r=routeSamples({...e,data:{...e.data,source:'coastal',roundtrip:true}},1000,15);assert.deepEqual(r[0].point,r[2].point);assert.ok(r[2].time>r[1].time);});
 test('wind malla validates timestamps, directions and nulls',async()=>{const now=Date.now(),t=Math.floor(now/1000);const rows=windGrid.map(()=>({hourly:{time:[t],wind_speed_10m:[null],wind_direction_10m:[90],wind_gusts_10m:[30]}}));const field=await loadWind({now,fetcher:async()=>({ok:true,json:async()=>rows})});const f=windSample(field,[40,4],t);assert.equal(f.speed,null);assert.equal(f.gust,30);assert.equal(f.direction.towards,270);assert.equal(windSample(field,[40,4],t+3600).gust,null);await assert.rejects(loadWind({now,fetcher:async()=>({ok:true,json:async()=>[]})}),/incompleta/);});
+
+test('pending route joins connected edges without crossing gaps',()=>{const a=[[40,4],[40,4.001]],b=[[40,4.001],[40,4.002]],c=[[40,4.5],[40,4.6]];assert.deepEqual(pendingRoute([a,b,c],a),[[40,4],[40,4.001],[40,4.002]]);});
