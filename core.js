@@ -15,7 +15,7 @@ export const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d
 // Validate persisted and locally recovered records before they can affect the UI.
 export function validateEntry(e){
  if(!e||!['trip','plan','place','goal','preferences'].includes(e.kind)||typeof e.title!=='string'||!e.title.trim()||e.title.length>180||!e.data||typeof e.data!=='object')throw Error('La ficha no es válida. Revisa su nombre y sus datos.');
- const d=e.data;
+ const d=e.data;for(const key of ['parkingCoordinates','accessCoordinates'])if(d[key]&&(typeof d[key]!=='string'||!/^\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*$/.test(d[key])||!validPoint(d[key].split(',').map(Number))))throw Error('Revisa las coordenadas de aparcamiento y acceso: latitud,longitud.');
  if(['trip','plan'].includes(e.kind)){
   if(!Array.isArray(d.points)||d.points.length<2||d.points.length>50000||!d.points.every(validPoint)||distance(d.points)<=.01)throw Error('El recorrido necesita al menos dos puntos distintos y válidos.');
   if(!/^\d{4}-\d{2}-\d{2}$/.test(d.date||'')||new Date(d.date+'T12:00:00Z').toISOString().slice(0,10)!==d.date)throw Error('Revisa la fecha de la salida.');
