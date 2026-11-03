@@ -21,7 +21,7 @@ try:
  with sync_playwright() as p:
   browser=p.chromium.launch()
   for width in [393,1280]:
-   context=browser.new_context(viewport={'width':width,'height':900},service_workers='block');page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)));page.on('dialog',lambda d:d.accept())
+   context=browser.new_context(viewport={'width':width,'height':900},service_workers='block');page=context.new_page();errors=[];page.on('pageerror',lambda e:(errors.append(str(e)),print('PAGE_ERROR',e,flush=True)));page.on('dialog',lambda d:d.accept())
    page.route('**/backend.js*',lambda r:r.fulfill(body=backend,content_type='text/javascript'))
    page.route('**/api.open-meteo.com/**',lambda r:r.fulfill(json=weather(r.request.url)))
    page.route('**/marine-api.open-meteo.com/**',lambda r:r.fulfill(json=weather(r.request.url,True)))
@@ -32,7 +32,7 @@ try:
    page.locator('#trip-list [data-action=view-adventure][data-id=trip]').click();page.locator('#adventure-sheet [data-action=route-profile]').click();page.locator('#profile-run').click();page.wait_for_function("document.querySelector('#profile-result').textContent.includes('Llegada')");assert 'Punto intermedio' in page.locator('#profile-result').inner_text();page.locator('#content-dialog [data-close]').click()
    page.locator('[data-tab=progreso]').click();page.wait_for_selector('#period-result');assert 'costa nueva' in page.locator('#period-result').inner_text();page.locator('#period-month').select_option('11')
    # Invoke menu routes through their existing user control.
-   page.locator('#menu-button').click();page.locator('[data-menu=plans]').click();page.locator('[data-action=compare]').click();page.locator('#compare-selection input').nth(0).check();page.locator('#compare-selection input').nth(1).check();page.locator('#compare-run').click();page.wait_for_function("!document.querySelector('#compare-results').textContent.includes('Consultando')");assert page.locator('#compare-results .card').count()==2
+   page.locator('#menu-button').click();page.locator('[data-menu=plans]').click();page.locator('[data-action=compare]').click();page.locator('#compare-selection input').nth(0).check();page.locator('#compare-selection input').nth(1).check();page.locator('#compare-run').click();page.wait_for_function("!document.querySelector('#compare-results').textContent.includes('Consultando')");assert page.locator('#compare-results .card').count()==2,{'result':page.locator('#compare-results').inner_text(),'time':page.locator('#compare-time').input_value(),'checked':page.locator('#compare-selection input:checked').count(),'errors':errors}
    page.locator('#content-dialog [data-close]').click();page.locator('[data-tab=mapa]').click();page.locator('[data-map=layers]').click();page.locator('#pending-coast').check();page.locator('[data-map=layers]').click();assert page.locator('#pending-coast').is_checked()
    page.route('**/api.open-meteo.com/**',lambda r:r.fulfill(status=503,body='unavailable'));page.locator('#wind-retry').click();page.wait_for_function("document.querySelector('#wind-status').textContent.includes('no disponible')");assert page.locator('#wind-day').is_disabled();assert 'Viento no disponible' in page.locator('#wind-point-data').inner_text()
    assert not errors,errors;page.screenshot(path=str(ROOT/f'tests/experience-{width}.png'));context.close()
