@@ -8,3 +8,6 @@ export function availableDays(range,now=Date.now()){const today=dayKey(now/1000)
 export function dayHours(range,day,now=Date.now()){return range.times.filter(t=>dayKey(t)===day&&t*1000>=now);}
 export function sampleForecast(range,time){const val=(data,key)=>{const i=data?.hourly.time.indexOf(time);return i>=0&&available(data.hourly[key]?.[i])?data.hourly[key][i]:null;};const m=range.marine;return {point:range.point,time,temperature:val(range.weather,'temperature_2m'),windSpeed:val(range.weather,'wind_speed_10m'),windDirection:direction(val(range.weather,'wind_direction_10m')),windGust:val(range.weather,'wind_gusts_10m'),waveHeight:val(m,'wave_height'),waveDirection:direction(val(m,'wave_direction')),marinePoint:m&&available(m.latitude)&&available(m.longitude)?[m.latitude,m.longitude]:null,partial:range.partial};}
 export async function fetchForecast(point,options={}){const range=await fetchForecastRange(point,options);return sampleForecast(range,range.times.find(t=>t*1000>=(options.now??Date.now())));}
+
+// Map arrows indicate the source bearing (meteorological 'from'), not the destination.
+export function originRadians(d){return d&&Number.isFinite(d.degrees)?d.degrees*Math.PI/180:null;}

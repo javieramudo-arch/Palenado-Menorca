@@ -139,3 +139,6 @@ Hora fija centrada sobre una etiqueta turquesa y guía vertical. La escala infer
 
 ## 0.10.0 · Oleaje azul en el mapa
 Flechas azules de doble punta sobre el mar, junto a los trazos de viento. Pasivas, sin fichas ni clics, sincronizadas con la hora general del mapa. La dirección viene de Open-Meteo Marine, se convierte de procedencia a desplazamiento y se solicita con selección de celda marina. Se utiliza la costa de referencia para evitar dibujarlas sobre Menorca. Datos ausentes, fuera de hora o mar en calma no producen flechas. Un fallo marino no oculta el viento; se puede reintentar desde Meteo. La animación es visual y no representa una velocidad de propagación. Es una previsión de malla, no una medición en directo ni un cálculo de refracción local.
+
+## 0.10.1 · Animación independiente de la hora
+Pausar la evolución o elegir una hora fija detiene el reloj, pero mantiene animadas las flechas del viento y del oleaje. Las puntas ahora señalan su procedencia (de dónde vienen), coherente con las orientaciones de las fichas. La animación es orientativa y no representa desplazamiento ni velocidad física. Se siguen respetando movimiento reducido y el interruptor de animación.

@@ -1,7 +1,7 @@
 name: Comprobar y publicar Paleando Menorca
 on:
   push:
-    branches: [main, waves-0100]
+    branches: [main, arrows-0101]
   workflow_dispatch:
 permissions:
   contents: read
@@ -30,7 +30,7 @@ jobs:
           node --check wave-field.js
           node --check time-ruler.js
           node --check journey-tools.js
-          node --test tests/audit-fixes.test.js tests/password-recovery.test.js tests/experience.test.js tests/timeline.test.js tests/ruler.test.js tests/waves.test.js
+          node --test tests/audit-fixes.test.js tests/password-recovery.test.js tests/experience.test.js tests/timeline.test.js tests/ruler.test.js tests/waves.test.js tests/arrows.test.js
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -50,6 +50,7 @@ jobs:
           python tests/audit_stage2_browser.py
           python tests/meteo_browser.py
           python tests/waves_browser.py
+          python tests/arrows_browser.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

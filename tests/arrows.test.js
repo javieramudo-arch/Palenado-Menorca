@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {direction,originRadians} from '../forecast.js';
+test('arrow heads point to where wind and waves come from',()=>{for(const n of [0,45,90,180,270,359]){assert.equal(originRadians(direction(n)),n*Math.PI/180);assert.notEqual(originRadians(direction(n)),direction(n).towards*Math.PI/180);}assert.equal(originRadians(null),null);assert.equal(originRadians(direction(null)),null);});
