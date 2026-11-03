@@ -39,7 +39,8 @@ jobs:
           pip install playwright==1.58.0
           python -m playwright install --with-deps chromium
       - name: Verificar proveedor meteorológico real y sus condiciones
-        run: node tests/live-wind.mjs
+        run: |
+          node tests/live-wind.mjs
           node tests/live-waves.mjs
       - name: Revisar cambios recientes de Supabase (solo lectura)
         run: node -e "fetch('https://supabase.com/changelog.md').then(r=>r.text()).then(t=>console.log('SUPABASE_CHANGELOG',t.slice(0,1600))).catch(e=>console.log('CHANGELOG_UNAVAILABLE',e.message))"
