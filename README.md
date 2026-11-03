@@ -120,3 +120,6 @@ Fuente y condiciones: https://open-meteo.com/en/terms y https://open-meteo.com/e
 Herramientas: repetir aventuras con ID nuevo y sin datos observados ni fotos; comparación de 2–4 rutas; previsión de salida, punto medio y llegada con horas estimadas; selección de tramos pendientes; filtros combinables; resúmenes que descuentan la costa recorrida antes del periodo; zona, acceso y coordenadas diferenciadas del aparcamiento. El GPX mantiene su recorrido completo. La previsión del perfil usa ritmo uniforme y distribuye paradas, y no determina navegabilidad.
 
 Los filtros se conservan mientras está abierta la app. Los nuevos campos son opcionales, sin migraciones. No se deduce una zona para registros antiguos. Las consultas fallidas ofrecen reintento y nunca convierten ausencias en cero. La sincronización distingue borrador local de datos guardados en cuenta.
+
+### 0.7.1
+Franja horaria comparativa en previsión completa y conservación de los filtros avanzados al entrar y salir de la práctica.
