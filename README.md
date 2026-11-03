@@ -123,3 +123,9 @@ Los filtros se conservan mientras está abierta la app. Los nuevos campos son op
 
 ### 0.7.1
 Franja horaria comparativa en previsión completa y conservación de los filtros avanzados al entrar y salir de la práctica.
+
+## 0.8.0 · Meteo bajo demanda
+
+«Meteo» pide seleccionar un punto antes de abrir el bloque completo. El mapa inicial queda libre de ese bloque. Tras elegir el punto, un control inferior izquierdo muestra dirección, velocidad y rachas, brújula y manga, con evolución y una barra de horas que recorre los días disponibles. Sus datos y controles están sincronizados con la ventana detallada. Los controles no propagan gestos al trazado; cancelar o cerrar conserva el borrador y restaura la herramienta anterior. «Detalles» reabre el punto elegido; «Meteo» permite elegir uno nuevo. El viento sigue siendo una previsión de malla aproximada.
+
+Comprobación específica: Chromium en tamaños móvil y escritorio con meteorología y cuenta simuladas; selección, cancelación, evolución, horas, ventanas y aislamiento del borrador. Pendiente de comprobación en Android físico.

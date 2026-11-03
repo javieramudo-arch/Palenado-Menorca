@@ -1,7 +1,7 @@
 name: Comprobar y publicar Paleando Menorca
 on:
   push:
-    branches: [main, experience-070]
+    branches: [main, meteo-080]
   workflow_dispatch:
 permissions:
   contents: read
@@ -44,7 +44,7 @@ jobs:
         run: |
           python tests/audit_stage1_browser.py
           python tests/audit_stage2_browser.py
-          python tests/experience_browser.py
+          python tests/meteo_browser.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
