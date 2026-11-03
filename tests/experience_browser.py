@@ -25,6 +25,7 @@ try:
    page.route('**/app.js*',lambda r:r.fulfill(body=(ROOT/'app.js').read_text()+'\nwindow.experienceTest={map:()=>map,pending:()=>pendingLayer,startPractice,endPractice};',content_type='text/javascript'))
    page.route('**/backend.js*',lambda r:r.fulfill(body=backend,content_type='text/javascript'))
    page.route('**/api.open-meteo.com/**',lambda r:r.fulfill(json=weather(r.request.url)))
+   page.route('**/embed.windy.com/**',lambda r:r.fulfill(body='<html>Windy simulado</html>',content_type='text/html'))
    page.route('**/marine-api.open-meteo.com/**',lambda r:r.fulfill(json=weather(r.request.url,True)))
    page.goto('http://127.0.0.1:8083/',wait_until='networkidle');page.wait_for_function("document.querySelector('#wind-day').options.length>1")
    assert 'Previsión para' in page.locator('#wind-status').inner_text();page.locator('#wind-day').select_option(index=2);page.locator('#wind-hour').select_option(index=4);assert page.locator('#wind-hour').input_value();page.locator('#wind-now').click();assert page.locator('#wind-day').input_value();page.locator('#wind-motion').uncheck();page.locator('#wind-visible').uncheck();page.locator('#wind-visible').check();page.locator('#wind-play').click();page.wait_for_timeout(1000);page.locator('#wind-play').click()
