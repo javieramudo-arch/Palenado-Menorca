@@ -19,3 +19,5 @@ body{background:#f6f8f1 url('./sup-pattern.svg') repeat;background-size:260px 26
 
 .ruler-day{z-index:0}.ruler-tick{z-index:1}.ruler-tick.past{opacity:.32}
 .map-wrap:has(.meteo-map-control) .map-hint{bottom:90px}.meteo-map-control #meteo-map-date{font-variant-numeric:tabular-nums}
+
+.wave-canvas{position:absolute;pointer-events:none!important;z-index:1}.leaflet-overlay-pane>svg{z-index:2}

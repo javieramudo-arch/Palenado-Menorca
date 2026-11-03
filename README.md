@@ -136,3 +136,6 @@ Franja mínima de ancho completo en el borde inferior del mapa: dirección y vel
 ## 0.9.0 · Regla temporal de mar
 
 Hora fija centrada sobre una etiqueta turquesa y guía vertical. La escala inferior se desliza con días alternados y marcas horarias; arrastrar o tocar selecciona una hora disponible y pausa la reproducción. Play y pausa siguen separados. La regla conserva el horizonte de 48 horas, la independencia de Meteo y los datos existentes. El movimiento suave respeta movimiento reducido. Los tramos anteriores a la hora inicial se dibujan atenuados como contexto visual y no pueden seleccionarse.
+
+## 0.10.0 · Oleaje azul en el mapa
+Flechas azules de doble punta sobre el mar, junto a los trazos de viento. Pasivas, sin fichas ni clics, sincronizadas con la hora general del mapa. La dirección viene de Open-Meteo Marine, se convierte de procedencia a desplazamiento y se solicita con selección de celda marina. Se utiliza la costa de referencia para evitar dibujarlas sobre Menorca. Datos ausentes, fuera de hora o mar en calma no producen flechas. Un fallo marino no oculta el viento; se puede reintentar desde Meteo. La animación es visual y no representa una velocidad de propagación. Es una previsión de malla, no una medición en directo ni un cálculo de refracción local.

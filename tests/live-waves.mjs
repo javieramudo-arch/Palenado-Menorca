@@ -1,0 +1,2 @@
+import {loadWaves,waveSample} from '../wave-field.js';
+const c=new AbortController(),timer=setTimeout(()=>c.abort(),30000);try{const f=await loadWaves({signal:c.signal});const sample=waveSample(f,[40.14,4.1],Date.now()/1000);console.log('LIVE_WAVES',f.rows.length,'marine cells; sample from-provider',sample,'first-point',f.rows[0].latitude,f.rows[0].longitude);if(!sample)throw Error('La comprobación real no encontró dirección marina actual.');}finally{clearTimeout(timer);}
