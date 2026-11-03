@@ -14,35 +14,35 @@ def weather(url,marine=False):
  q=parse_qs(urlparse(url).query);start=int(time.time())//3600*3600;times=[start+i*3600 for i in range(96)]
  def row():
   h={'time':times}
-  for key,val in [('wind_speed_10m',18),('wind_direction_10m',45),('wind_gusts_10m',28),('temperature_2m',20),('wave_height',.5),('wave_direction',90)]:h[key]=[val]*96
+  for key,val in [('wind_speed_10m',18),('wind_direction_10m',45),('wind_gusts_10m',28),('temperature_2m',20),('wave_height',.5),('wave_direction',90)]:h[key]=[(val+i*17)%360 for i in range(96)] if key=='wind_direction_10m' else [val+i%9 for i in range(96)] if key=='wind_speed_10m' else [val]*96
   return {'latitude':40,'longitude':4,'hourly':h}
  return [row() for _ in range(20)] if len(q.get('latitude',[''])[0].split(','))==20 else row()
 try:
  with sync_playwright() as p:
   browser=p.chromium.launch()
   for width in [393,1280]:
-   context=browser.new_context(viewport={'width':width,'height':900},service_workers='block');page=context.new_page();errors=[]
+   context=browser.new_context(viewport={'width':width,'height':900},service_workers='block',reduced_motion='reduce');page=context.new_page();errors=[]
    page.on('pageerror',lambda e:(errors.append(str(e)),print('PAGE_ERROR',e,flush=True)));page.on('dialog',lambda d:d.accept())
    page.route('**/app.js*',lambda r:r.fulfill(body=(ROOT/'app.js').read_text()+'\nwindow.meteoTest={map:()=>map,state:()=>({mode,draft:structuredClone(draft),weatherSelection,weatherReturn})};',content_type='text/javascript'))
    page.route('**/backend.js*',lambda r:r.fulfill(body=backend,content_type='text/javascript'))
    page.route('**/api.open-meteo.com/**',lambda r:r.fulfill(json=weather(r.request.url)))
    page.route('**/marine-api.open-meteo.com/**',lambda r:r.fulfill(json=weather(r.request.url,True)))
    page.route('**/embed.windy.com/**',lambda r:r.fulfill(body='<html>Windy simulado</html>',content_type='text/html'))
-   page.goto('http://127.0.0.1:8083/',wait_until='networkidle');page.wait_for_function("document.querySelector('#wind-day').options.length>1")
-   assert page.locator('#weather-button').inner_text().strip().endswith('Meteo');assert not page.locator('#wind-panel').is_visible();assert not page.locator('.meteo-map-control').is_visible()
-   page.locator('#weather-button').click();assert 'Toca el mapa' in page.locator('#map-hint').inner_text();page.locator('#cancel-draw').click();assert not page.locator('#meteo-dialog').is_visible();assert not page.locator('.meteo-map-control').is_visible()
-   page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':100});page.wait_for_selector('#meteo-dialog[open]');assert 'Punto seleccionado' in page.locator('#wind-point-data').inner_text();page.locator('#wind-day').select_option(index=2);page.locator('#wind-hour').select_option(index=3);time=page.locator('#wind-hour').input_value();page.locator('#meteo-dialog [data-close]').click();page.wait_for_function('meteoTest.state().weatherReturn===null');assert page.locator('#meteo-map-hours').get_attribute('data-time')==time
-   assert page.locator('.meteo-map-control').is_visible();assert 'Viene del NE' in page.locator('#meteo-mini-data').inner_text();assert 'Rachas: 28 km/h' in page.locator('#meteo-mini-data').inner_text()
-   bounds=page.locator('.meteo-map-control').bounding_box();mapbox=page.locator('#map').bounding_box();assert bounds['x']>=mapbox['x'];assert bounds['y']+bounds['height']<=mapbox['y']+mapbox['height']+1;assert bounds['x']+bounds['width']<=mapbox['x']+mapbox['width']
-   before=page.evaluate('JSON.stringify(meteoTest.state())');page.locator('#meteo-map-hours').focus();page.locator('#meteo-map-hours').press('Home');
-   for _ in range(4):page.locator('#meteo-map-hours').press('ArrowRight')
-   assert page.locator('#meteo-map-hours').input_value()=='4';assert page.evaluate('JSON.stringify(meteoTest.state())')==before
-   page.locator('#meteo-map-play').click();page.wait_for_timeout(1100);assert page.locator('#meteo-map-hours').input_value()!='4';page.locator('#meteo-map-play').click();stopped=page.locator('#meteo-map-hours').input_value();page.wait_for_timeout(1000);assert page.locator('#meteo-map-hours').input_value()==stopped
-   page.locator('#meteo-details').click();assert page.locator('#wind-hour').input_value()==page.locator('#meteo-map-hours').get_attribute('data-time');page.locator('#wind-full').click();page.wait_for_selector('#forecast-hour:not([disabled])');page.locator('#content-dialog [data-close]').click();assert not page.locator('#meteo-dialog').is_visible()
-   # Selecting Meteo in the middle of a real route draft never changes the track.
-   page.locator('#new-button').click();position=page.evaluate('''()=>{const m=meteoTest.map();m.setView([39.93805,3.93665],13,{animate:false});const p=m.latLngToContainerPoint([39.93805,3.93665]),target={x:m.getSize().x-100,y:160};m.panBy([p.x-target.x,p.y-target.y],{animate:false});return target;}''');page.locator('#map').click(position=position);assert page.evaluate('meteoTest.state().draft.data.points.length')==1;previous=page.evaluate('meteoTest.state().draft');page.locator('#weather-button').click();page.locator('#map').click(position={'x':180,'y':110});page.wait_for_selector('#meteo-dialog[open]');assert page.evaluate('meteoTest.state().draft')==previous;page.locator('#meteo-dialog [data-close]').click();page.wait_for_function('meteoTest.state().weatherReturn===null');page.locator('#meteo-map-hours').focus();page.locator('#meteo-map-hours').press('ArrowRight');assert page.evaluate('meteoTest.state().mode')!='weather';assert page.evaluate('meteoTest.state().draft')==previous
-   page.locator('#meteo-details').click();page.locator('#wind-point').click();page.locator('#cancel-draw').click();assert page.evaluate('meteoTest.state().draft')==previous
-   page.locator('#meteo-details').click();page.route('**/api.open-meteo.com/**',lambda r:r.fulfill(status=503,body='unavailable'));page.locator('#wind-retry').click();page.wait_for_function("document.querySelector('#wind-status').textContent.includes('no disponible')");page.locator('#meteo-dialog [data-close]').click();page.wait_for_function('meteoTest.state().weatherReturn===null');assert page.locator('#meteo-map-hours').is_disabled();assert 'Viento no disponible' in page.locator('#meteo-mini-data').inner_text()
-   assert not errors,errors;page.screenshot(path=str(ROOT/f'tests/meteo-{width}.png'));context.close()
-  browser.close();print('METEO_BROWSER_PASS: hidden initial panel, choose/cancel point, shared hours/play/pause, lower-left bounds, details/full forecast, draft isolation and errors; desktop/mobile; providers simulated.')
+   page.goto('http://127.0.0.1:8083/',wait_until='networkidle');page.wait_for_function("!document.querySelector('#meteo-map-hours').disabled")
+   assert page.locator('.meteo-map-control').is_visible();assert not page.locator('#wind-panel').is_visible();assert page.locator('.meteo-map-control button').count()==2
+   assert page.locator('.meteo-map-control .windsock,.meteo-map-control .wind-compass,#meteo-details,#meteo-hide').count()==0
+   assert 'km/h' in page.locator('#meteo-mini-data').inner_text();assert 'Rachas' not in page.locator('.meteo-map-control').inner_text()
+   first=int(page.locator('#meteo-map-hours').get_attribute('data-time'));page.locator('#meteo-map-hours').focus();page.locator('#meteo-map-hours').press('End');last=int(page.locator('#meteo-map-hours').get_attribute('data-time'));assert last-first==48*3600;page.locator('#meteo-map-hours').press('Home')
+   initial_image=page.locator('.wind-canvas').evaluate('(c)=>c.toDataURL()');initial_text=page.locator('#meteo-mini-data').inner_text();page.locator('#meteo-map-hours').press('ArrowRight');assert page.locator('.wind-canvas').evaluate('(c)=>c.toDataURL()')!=initial_image
+   assert page.locator('#meteo-mini-data').inner_text()!=initial_text
+   page.locator('#meteo-map-play').click();page.locator('#meteo-map-play').click();page.wait_for_timeout(1100);page.locator('#meteo-map-pause').click();stopped=page.locator('#meteo-map-hours').input_value();assert int(stopped)>1;page.wait_for_timeout(1000);assert page.locator('#meteo-map-hours').input_value()==stopped
+   def bounds():
+    box=page.locator('.meteo-map-control').bounding_box();m=page.locator('#map').bounding_box();assert box['height']<=64,box;assert box['width']>=m['width']-24;assert box['x']>=m['x'];assert box['x']+box['width']<=m['x']+m['width']+1;assert box['y']+box['height']<=m['y']+m['height']+1
+   bounds();page.locator('[data-map=fullscreen]').click();page.wait_for_timeout(200);bounds();page.locator('[data-map=fullscreen]').click();page.wait_for_timeout(200)
+   general=page.locator('#meteo-map-hours').get_attribute('data-time');page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':100});page.wait_for_selector('#meteo-dialog[open]');page.locator('#wind-day').select_option(index=3);assert page.locator('#meteo-map-hours').get_attribute('data-time')==general;page.locator('#meteo-dialog [data-close]').click();page.wait_for_function('meteoTest.state().weatherReturn===null');assert page.locator('.meteo-map-control').is_visible()
+   page.locator('#new-button').click();previous=page.evaluate('meteoTest.state()');page.locator('#meteo-map-hours').focus();page.locator('#meteo-map-hours').press('ArrowRight');assert page.evaluate('meteoTest.state()')==previous
+   page.locator('#weather-button').click();page.locator('#cancel-draw').click();assert page.evaluate('meteoTest.state().draft')==previous['draft'];assert page.locator('.meteo-map-control').is_visible()
+   page.screenshot(path=str(ROOT/f'tests/timeline-{width}.png'));page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':100});page.wait_for_selector('#meteo-dialog[open]');page.route('**/api.open-meteo.com/**',lambda r:r.fulfill(status=503,body='unavailable'));page.locator('#wind-retry').click();page.wait_for_function("document.querySelector('#wind-status').textContent.includes('no disponible')");page.locator('#meteo-dialog [data-close]').click();assert page.locator('#meteo-map-hours').is_disabled();assert page.locator('#meteo-mini-data').inner_text()=='No disponible'
+   assert not errors,errors;context.close()
+  browser.close();print('TIMELINE_BROWSER_PASS mobile/desktop: always visible, <=64px, full bottom width/fullscreen, now to 48h, separate play/pause, arrow field redraw, independent Meteo, draft isolation, missing data. Services simulated.')
 finally:server.shutdown()
