@@ -1,3 +1,4 @@
+import os
 """Affected experience flows. Chromium real, meteorology and account simulated."""
 import functools,http.server,threading,json
 from pathlib import Path
@@ -19,7 +20,7 @@ def weather(url,marine=False):
  return [row() for _ in range(20)] if len(q.get('latitude',[''])[0].split(','))==20 else row()
 try:
  with sync_playwright() as p:
-  browser=p.chromium.launch()
+  browser=p.chromium.launch(channel=os.environ.get('PALEANDO_BROWSER_CHANNEL'))
   for width in [393,1280]:
    context=browser.new_context(viewport={'width':width,'height':900},service_workers='block',reduced_motion='reduce');page=context.new_page();errors=[]
    page.on('pageerror',lambda e:(errors.append(str(e)),print('PAGE_ERROR',e,flush=True)));page.on('dialog',lambda d:d.accept())

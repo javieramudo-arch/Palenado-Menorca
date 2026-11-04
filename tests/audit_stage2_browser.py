@@ -1,3 +1,4 @@
+import os
 """Unified adventure and password flows. Real Chromium, simulated account and emails."""
 import functools,http.server,json,threading
 from pathlib import Path
@@ -13,7 +14,7 @@ export async function saveEntry(e){return e;}export async function signedPhoto()
 '''
 try:
  with sync_playwright() as p:
-  browser=p.chromium.launch()
+  browser=p.chromium.launch(channel=os.environ.get('PALEANDO_BROWSER_CHANNEL'))
   for width in [393,1280]:
    context=browser.new_context(viewport={'width':width,'height':900},service_workers='block');page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
    page.route('**/backend.js*',lambda r:r.fulfill(body=BACKEND,content_type='text/javascript'))

@@ -1,3 +1,4 @@
+import os
 """The four audit fixes only. Real Chromium; account/storage simulated."""
 import functools,http.server,json,threading
 from pathlib import Path
@@ -16,7 +17,7 @@ export async function signedPhoto(){return './guide-photo.svg';}export async fun
 HOOK='''\nwindow.auditApp={startPractice,weather,endPractice,state:()=>({mode,practice:!!practice,weatherSelection,weatherReturn,draft:structuredClone(draft)})};'''
 try:
  with sync_playwright() as p:
-  browser=p.chromium.launch();page=browser.new_page(viewport={'width':393,'height':851});errors=[]
+  browser=p.chromium.launch(channel=os.environ.get('PALEANDO_BROWSER_CHANNEL'));page=browser.new_page(viewport={'width':393,'height':851});errors=[]
   page.on('pageerror',lambda e:(errors.append(str(e)),print('PAGE_ERROR',str(e),flush=True)));page.on('dialog',lambda d:d.accept())
   page.route('**/backend.js*',lambda r:r.fulfill(body=BACKEND,content_type='text/javascript'))
   page.route('**/app.js*',lambda r:r.fulfill(body=(ROOT/'app.js').read_text()+HOOK,content_type='text/javascript'))

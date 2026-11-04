@@ -1,3 +1,4 @@
+import os
 """Affected experience flows. Chromium real, meteorology and account simulated."""
 import functools,http.server,threading,json
 from pathlib import Path
@@ -32,7 +33,7 @@ def zones_weather(url,marine=False):
  return rows if len(rows)>1 else rows[0]
 try:
  with sync_playwright() as p:
-  browser=p.chromium.launch()
+  browser=p.chromium.launch(channel=os.environ.get('PALEANDO_BROWSER_CHANNEL'))
   for width in [393,1280]:
    context=browser.new_context(viewport={'width':width,'height':900},service_workers='block',reduced_motion='reduce');page=context.new_page();errors=[]
    page.on('pageerror',lambda e:(errors.append(str(e)),print('PAGE_ERROR',e,flush=True)));page.on('dialog',lambda d:d.accept())
@@ -41,12 +42,12 @@ try:
    page.route('**/api.open-meteo.com/**',lambda r:r.fulfill(json=zones_weather(r.request.url)))
    page.route('**/marine-api.open-meteo.com/**',lambda r:r.fulfill(json=zones_weather(r.request.url,True)))
    page.goto('http://127.0.0.1:8083/',wait_until='networkidle');page.wait_for_function("!document.querySelector('#meteo-map-hours').disabled")
-   before=page.evaluate('zonesTest.state().entries');page.locator('[data-map=layers]').click();page.locator('#zones-layer').check();assert page.locator('#zones-panel').is_visible();assert page.locator('#layers').is_hidden()
+   before=page.evaluate('zonesTest.state().entries');page.locator('[data-map=layers]').click();page.locator('#zones-layer').check();assert page.locator('#zones-panel').is_visible();assert page.locator('#layers').is_hidden();assert page.evaluate('document.documentElement.scrollWidth')<=width+1
    page.locator('#zones-run').click();page.wait_for_function("document.querySelector('#zones-state').textContent.includes('propuestas comparativas')");assert page.locator('#zones-results .card').count()>0;assert page.locator('#zones-results .card').count()<=3;assert page.evaluate('zonesTest.state().entries')==before
    panel=page.locator('#zones-panel').bounding_box();mapbox=page.locator('#map').bounding_box();assert panel['y']>=mapbox['y']+mapbox['height']
    page.locator('#zones-results [data-zone-view]').first.click();assert page.locator('#zones-detail').is_visible();assert 'Máximos' in page.locator('#zones-detail').inner_text();assert 'seguro' not in page.locator('#zones-detail').inner_text().lower()
-   page.locator('#zones-results [data-zone-plan]').first.click();page.wait_for_selector('#editor-dialog[open]');assert page.locator('#editor-type').inner_text()=='RUTA PENDIENTE';draft=page.evaluate('zonesTest.state().draft');assert len(draft['data']['points'])>2;assert page.evaluate('zonesTest.state().entries')==before
-   page.locator('#close-editor').click();page.locator('#zones-results [data-zone-plan]').first.click();assert page.evaluate('zonesTest.state().draft.id')==draft['id'];page.locator('#close-editor').click()
+   page.locator('#zones-results [data-zone-plan]').first.click();page.wait_for_selector('#editor-dialog[open]');assert page.locator('#editor-type').inner_text()=='RUTA PENDIENTE';draft=page.evaluate('zonesTest.state().draft');page.locator('[name=notes]').fill('Borrador protegido');assert len(draft['data']['points'])>2;assert page.evaluate('zonesTest.state().entries')==before
+   page.locator('#close-editor').click();page.locator('#zones-results [data-zone-plan]').first.click();assert page.evaluate('zonesTest.state().draft.id')==draft['id'];assert page.locator('[name=notes]').input_value()=='Borrador protegido';page.locator('#close-editor').click()
    page.locator('#meteo-map-hours').focus();page.locator('#meteo-map-hours').press('ArrowRight');assert page.locator('#zones-results .card').count()==0;assert 'Hora del mapa cambiada' in page.locator('#zones-state').inner_text();assert page.evaluate('zonesTest.state().draft.id')==draft['id']
    page.locator('#zones-panel summary').first.click();page.locator('#zones-gust').fill('0');page.locator('#zones-run').click();page.wait_for_function("document.querySelector('#zones-state').textContent.includes('propuestas comparativas')");assert page.locator('#zones-results .card').count()==0;assert 'No hay sectores' in page.locator('#zones-results').inner_text()
    page.locator('#zones-gust').fill('');page.locator('#zones-run').click();page.wait_for_function("document.querySelector('#zones-state').textContent.includes('propuestas comparativas')");page.screenshot(path=str(ROOT/f'tests/zones-{width}.png'))
