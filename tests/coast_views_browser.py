@@ -57,6 +57,10 @@ window.coastTest={map:()=>map,state:()=>({view:coastViews.current,previous:coast
    # Raster pixels are only on the sea side; the coast itself has a transparent channel.
    band=page.evaluate("""async()=>{const {landMask}=await import('./wave-field.js?v=0.10.1'),mask=landMask(),c=document.querySelector('.coast-sea-bands'),m=coastTest.map(),d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let sea=0,land=0;for(let y=0;y<c.height;y+=2)for(let x=0;x<c.width;x+=2)if(d[(y*c.width+x)*4+3]){const p=m.containerPointToLatLng([x+.5,y+.5]);if(mask([p.lat,p.lng]))land++;else sea++;}return {sea,land};}""");assert band['sea']>30,band;assert band['land']==0,band
    page.screenshot(path=str(ROOT/f'tests/coast-zones-{width}.png'))
+   if width==393:
+    import base64
+    print('COAST_PREVIEW_393 '+base64.b64encode(page.locator('#map-wrap').screenshot()).decode(),flush=True)
+   gap=page.evaluate("""async()=>{const {coastSectors}=await import('./zone-analysis.js?v=0.12.0'),m=coastTest.map(),c=document.querySelector('.coast-sea-bands'),d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let n=0,painted=0;for(const s of coastSectors())for(const[a,b]of s.segments){const p=m.latLngToContainerPoint([(a[0]+b[0])/2,(a[1]+b[1])/2]),x=Math.round(p.x),y=Math.round(p.y);if(x<0||y<0||x>=c.width||y>=c.height)continue;n++;if(d[(y*c.width+x)*4+3])painted++;}return {n,painted};}""");assert gap['n']>20 and gap['painted']==0,gap
    layers();page.locator('#pending-coast').check();assert state()['view']=='pending';assert page.locator('#zones-panel').is_hidden();assert page.locator('.coast-sea-bands').is_hidden()
    page.locator('[data-map=layers]').click();page.locator('[data-tab=diario]').click();page.locator('[data-action=view-adventure][data-id=trip2]').click();assert state()['view']=='adventure';assert state()['selected']=='trip2';assert state()['visible']['selected'] and not state()['visible']['pending'] and not state()['visible']['trips'];assert page.locator('#selected-route').get_attribute('data-route-id')=='trip2';assert 'Ida y vuelta' in page.locator('#selected-route-type').inner_text()
    page.wait_for_timeout(250)
