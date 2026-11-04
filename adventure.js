@@ -1,7 +1,7 @@
 import {escapeHtml as esc,tripKm,validPoint,number,categories} from './core.js?v=0.5.0';
 import {routeStyle,validGeometry,durationText} from './route-features.js?v=0.5.0';
 const exists=value=>value!==undefined&&value!==null&&value!=='';
-const labels={zone:'Zona',accessNotes:'Cómo llegar al agua',parkingCoordinates:'Coordenadas del aparcamiento',accessCoordinates:'Coordenadas del acceso',conditions:'Condiciones',recommendedConditions:'Condiciones recomendadas',difficulty:'Dificultad',parking:'Aparcamiento',comments:'Comentarios',weather:'Condiciones meteorológicas',point:'Coordenadas',category:'Categoría',notes:'Notas'};
+const labels={plannedStart:'Salida prevista',zone:'Zona',accessNotes:'Cómo llegar al agua',parkingCoordinates:'Coordenadas del aparcamiento',accessCoordinates:'Coordenadas del acceso',conditions:'Condiciones',recommendedConditions:'Condiciones recomendadas',difficulty:'Dificultad',parking:'Aparcamiento',comments:'Comentarios',weather:'Condiciones meteorológicas',point:'Coordenadas',category:'Categoría',notes:'Notas'};
 const human=key=>labels[key]||key.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[_-]/g,' ');
 function valueText(value){if(typeof value==='boolean')return value?'Sí':'No';if(Array.isArray(value))return value.map(valueText).join(' · ');if(value&&typeof value==='object')return Object.entries(value).map(([k,v])=>`${human(k)}: ${valueText(v)}`).join(' · ');return String(value);}
 export function adventureFields(entry){const d=entry.data||{},rows=[];const add=(name,value)=>{if(exists(value))rows.push([name,valueText(value)]);};const point=p=>validPoint(p)?p.map(n=>n.toFixed(6)).join(', '):null;

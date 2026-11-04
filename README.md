@@ -142,3 +142,13 @@ Flechas azules de doble punta sobre el mar, junto a los trazos de viento. Pasiva
 
 ## 0.10.1 · Animación independiente de la hora
 Pausar la evolución o elegir una hora fija detiene el reloj, pero mantiene animadas las flechas del viento y del oleaje. Las puntas ahora señalan su procedencia (de dónde vienen), coherente con las orientaciones de las fichas. La animación es orientativa y no representa desplazamiento ni velocidad física. Se siguen respetando movimiento reducido y el interruptor de animación.
+
+## 0.11.0 · Zonas para palear
+
+En Capas, «Zonas para palear» abre un panel bajo el mapa con fecha, hora de Menorca, duración incluyendo la vuelta y límites personales opcionales. Analiza 12 sectores amplios de la costa principal y tres puntos por sector, consultando viento, rachas, oleaje, dirección y periodo (si existe). Los máximos abarcan salida, horas intermedias y regreso, con datos de ambos proveedores alineados al mismo instante horario.
+
+La orientación de cada punto se estima con la geometría costera y comprobaciones tierra/mar a 400, 800 y 1200 m. Si queda incierta, falta información durante la franja o la celda marina está a más de 15 km, el sector se marca con información insuficiente. Se excluyen de las propuestas los sectores con componente de viento hacia mar abierto superior a 15° respecto al paralelo de costa, cambios de dirección superiores a 45° o límites personales excedidos. Esos ángulos describen el método geométrico, no umbrales universales de seguridad.
+
+Los candidatos restantes se ordenan por racha máxima, exposición directa al oleaje (altura por componente hacia la costa) y viento máximo, mostrando hasta tres. No hay puntuación de seguridad ni garantía de abrigo. No se modelan refracción, corrientes, protección por acantilados, restricciones o condiciones particulares de cada cala. Se muestran las limitaciones, puntos, horas, ajustes de celda y datos consultados. Las condiciones observadas pueden diferir.
+
+«Ver zona» encuadra el sector y abre su detalle bajo el mapa. «Planificar aquí» prepara un borrador costero con ID nuevo, exige revisión y guardado, y protege cualquier borrador previo. Accesos próximos solo de lugares ya registrados; no se inventa una entrada al agua. Al mover la línea temporal o modificar la franja se retiran los resultados anteriores hasta pulsar Analizar. Caché meteorológica en memoria de 10 minutos; consultas cancelables y respuestas antiguas descartadas. Ocultar la capa retira su análisis sin borrar datos del diario. Sin migraciones de base de datos.
