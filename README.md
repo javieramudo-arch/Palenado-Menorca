@@ -1,6 +1,6 @@
 # Paleando Menorca
 
-Diario personal de paddle surf. Nueva edición 0.3.0, creada desde cero con HTML, CSS y JavaScript. Sin Cloudflare, sin instalación y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
+Diario personal de paddle surf. Edición 0.14.0, creada desde cero con HTML, CSS y JavaScript. Publicada en GitHub Pages, con instalación PWA opcional y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
 
 ## Publicación
 
@@ -34,7 +34,7 @@ Configurar en Supabase **Authentication → URL Configuration** la URL definitiv
 
 ## Implementado en código
 
-Mapa Leaflet, tres bases (OpenTopoMap, PNOA, OpenStreetMap), cuatro controles independientes, GPS y radio de precisión, pantalla completa, filtros de recorridos y las cinco categorías de marcadores. Diario con búsqueda, filtro por año y favoritas, trazado costero automático con puntos de paso, edición, rutas pendientes y conversión explícita a salida. Importación GPX con revisión y exportación, distancia geodésica sin duplicar GPX, objetivos anuales, actividad mensual, lugares, fotos privadas, asociación de foto a marcador, estados de guardado y borradores por cuenta. Previsión diaria real de Open-Meteo, con errores visibles y enlace a Windy.
+Mapa Leaflet, tres bases (OpenTopoMap, PNOA, OpenStreetMap), cuatro controles independientes, GPS y radio de precisión, pantalla completa, filtros de recorridos y las cinco categorías de marcadores. Diario con búsqueda, filtro por año y favoritas, trazado costero automático con puntos de paso, edición, rutas pendientes y conversión explícita a salida. Importación GPX con revisión y exportación, distancia geodésica sin duplicar GPX, objetivos anuales, actividad mensual, lugares, fotos privadas, asociación de foto a marcador, estados de guardado y borradores por cuenta. Previsión horaria y diaria de Open-Meteo, con errores visibles y mapa oficial de Windy integrado.
 
 Práctica dirigida de 28 acciones reales, aislada de las escrituras de servidor: mapa, marcador, fotografía de ejemplo, asociación, tiempo, menú, guardar, editar, eliminar y deshacer. Retroceso por puntos de restauración, salida y conversión final a borrador real para revisión. Comienza después del login salvo preferencia “No mostrar de nuevo”; se puede reiniciar desde Ayuda y guía. La preferencia de la guía se recuerda por cuenta en este navegador; Preferencias permite guardarla también en la cuenta.
 
@@ -44,10 +44,10 @@ Miniaturas privadas, acceso al mar, borrador visible, validación de fichas, pro
 
 - Alternativa corta/larga. La costa única y el porcentaje ya se calculan como unión de intervalos de las aristas costeras de referencia. La barra principal muestra ese porcentaje, separado de los objetivos anuales.
 - La imagen original del logo anterior no está disponible. Se ha creado un logo nuevo inspirado en su descripción.
-- Condiciones recomendadas, ritmo y paradas; previsión de oleaje y comparativas entre años.
+- Comparativas de actividad entre años. El ritmo, las paradas y la previsión de oleaje ya están incorporados.
 - Sincronización automática de borradores entre dispositivos. Los borradores se conservan en el navegador de la cuenta y el guardado definitivo requiere conexión.
 
-No se incluye un service worker: los archivos se sirven por Internet para evitar actualizaciones atrapadas en cachés anteriores.
+La PWA incluye un service worker que solicita los archivos por Internet, sin almacenar el diario, las fotografías ni la previsión en caché.
 
 ## Verificación
 

@@ -1,7 +1,7 @@
 import {beaufortMarkup,beaufortText,toBeaufort} from './beaufort.js?v=0.13.0';
 import {mountMapLegend,windColor} from './map-legend.js?v=0.14.0';
 import {loadWaves,mountWaveLayer} from './wave-field.js?v=0.12.2';
-import {mountTimeRuler} from './time-ruler.js?v=0.9.0';
+import {mountTimeRuler} from './time-ruler.js?v=0.14.0';
 import {direction,dayKey,originRadians} from './forecast.js?v=0.10.1';
 export const windGrid=Array.from({length:20},(_,i)=>[39.80+Math.floor(i/5)*.10,3.76+(i%5)*.16]);
 export function windUrl(points=windGrid){return 'https://api.open-meteo.com/v1/forecast?'+new URLSearchParams({latitude:points.map(p=>p[0]).join(','),longitude:points.map(p=>p[1]).join(','),hourly:'wind_speed_10m,wind_direction_10m,wind_gusts_10m',wind_speed_unit:'kmh',timeformat:'unixtime',timezone:'Europe/Madrid',forecast_days:'4'});}
