@@ -45,7 +45,7 @@ try:
    assert '15–<30' in page.locator('.legend-weather').inner_text();assert 'km/h' in page.locator('.legend-weather').inner_text();assert page.locator('.legend-weather svg').count()==4
    assert page.locator('.legend-tracks span').count()==4;assert page.locator('.legend-tracks .dash').count()==1;assert page.locator('.legend-tracks .dots').count()==1;assert page.locator('.legend-sectors').is_hidden()
    assert page.locator('.legend-tracks i').evaluate_all("els=>els.map(e=>e.style.getPropertyValue('--legend-color'))")==['#11796f','#ad5c28','#2678c8','#8650ad']
-   assert page.locator('.legend-weather svg').evaluate_all("els=>els.map(e=>e.style.color)")==['rgb(17, 137, 128)','rgb(36, 124, 115)','rgb(134, 80, 173)','rgb(8, 126, 213)']
+   assert page.locator('.legend-weather svg').evaluate_all("els=>els.map(e=>e.style.color)")==['rgb(124, 255, 0)','rgb(255, 121, 0)','rgb(255, 99, 71)','rgb(8, 126, 213)']
    import base64
    key=page.locator('.map-color-legend').bounding_box();bar=page.locator('.meteo-map-control').bounding_box();preview=page.screenshot(clip={'x':bar['x'],'y':key['y']-3,'width':bar['width'],'height':bar['y']+bar['height']-key['y']+6});print('LEGEND_PREVIEW_'+str(width)+' '+base64.b64encode(preview).decode(),flush=True)
    # Fixed hour marker; moving ruler responds to actual touch/mouse drag and pauses playback.

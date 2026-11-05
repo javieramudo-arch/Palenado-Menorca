@@ -1,7 +1,7 @@
 name: Comprobar y publicar Paleando Menorca
 on:
   push:
-    branches: [main, map-legend-0122]
+    branches: [main, wind-palette-0123]
   workflow_dispatch:
 permissions:
   contents: read

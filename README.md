@@ -169,3 +169,8 @@ Las rutas pendientes azules ya no se muestran junto a las salidas en Tus recorri
 ## 0.12.2 · Leyenda del mapa sobre la línea temporal
 
 Leyenda horizontal compacta sobre la hora y Play/Pausa: flechas de viento por intensidad (<15, 15–<30, ≥30 km/h), oleaje azul de doble punta, salidas verdes/naranjas, rutas pendientes azules discontinuas y costa pendiente violeta punteada. En móvil ocupa dos filas pequeñas; al activar Zonas para palear añade sus bandas de exposición (menor exposición, revisar/variable, desfavorable y sin datos). El color no clasifica seguridad. La leyenda describe los trazos y no activa capas: las rutas pendientes siguen ocultas hasta solicitarlas. Se retira la leyenda duplicada bajo el mapa y se adapta el margen inferior del encuadre a la nueva altura. Sin cambios en los datos del diario.
+
+
+## 0.12.3 · Viento más visible
+
+Flechas y leyenda de viento: verde fosforito (<15 km/h), naranja butano (15–<30 km/h) y rojo tomate (≥30 km/h). Las flechas tienen mayor opacidad y un contorno discreto para distinguirlas sobre tierra y mar. Los colores de rutas, costa pendiente, zonas y oleaje conservan su significado.

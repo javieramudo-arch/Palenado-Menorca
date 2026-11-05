@@ -1,6 +1,6 @@
 import {routeStyle} from './route-features.js?v=0.12.0';
 export const waveColor='#087ed5',pendingCoastColor='#8650ad';
-export function windColor(speed){return speed<15?'#118980':speed<30?'#247c73':'#8650ad';}
+export function windColor(speed){return speed<15?'#7cff00':speed<30?'#ff7900':'#ff6347';}
 const arrow=(color,double=false)=>`<svg class="legend-arrow" viewBox="0 0 22 14" aria-hidden="true" style="color:${color}"><path d="M2 7h17m-5-5 5 5-5 5${double?'m-5-10 5 5-5 5':''}"/></svg>`;
 const line=(color,pattern='')=>`<i class="legend-route ${pattern}" style="--legend-color:${color}" aria-hidden="true"></i>`;
 export function mountMapLegend(parent,map,zoneStatus){
