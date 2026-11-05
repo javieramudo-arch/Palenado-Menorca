@@ -1,7 +1,7 @@
 name: Comprobar y publicar Paleando Menorca
 on:
   push:
-    branches: [main, beaufort-0130]
+    branches: [main, sea-experience-0140]
   workflow_dispatch:
 permissions:
   contents: read
@@ -26,6 +26,10 @@ jobs:
           node --check coastal.js
           npm ci --ignore-scripts
           node --check password-recovery.js
+          node --check sea-tools.js
+          node --check sea-ui.js
+          node --check share-card.js
+          node --check weather-chart.js
           node --check beaufort.js
           node --check map-legend.js
           node --check wind-field.js
@@ -34,7 +38,7 @@ jobs:
           node --check coast-views.js
           node --check time-ruler.js
           node --check journey-tools.js
-          node --test tests/audit-fixes.test.js tests/password-recovery.test.js tests/experience.test.js tests/timeline.test.js tests/ruler.test.js tests/waves.test.js tests/arrows.test.js tests/zones.test.js tests/coast-views.test.js tests/beaufort.test.js
+          node --test tests/audit-fixes.test.js tests/password-recovery.test.js tests/experience.test.js tests/timeline.test.js tests/ruler.test.js tests/waves.test.js tests/arrows.test.js tests/zones.test.js tests/coast-views.test.js tests/beaufort.test.js tests/sea-tools.test.js
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -52,10 +56,12 @@ jobs:
           node tests/live-wind.mjs
           node tests/live-waves.mjs
           node tests/live-zones.mjs
+          node tests/live-sea.mjs
       - name: Revisar cambios recientes de Supabase (solo lectura)
         run: node -e "fetch('https://supabase.com/changelog.md').then(r=>r.text()).then(t=>console.log('SUPABASE_CHANGELOG',t.slice(0,1600))).catch(e=>console.log('CHANGELOG_UNAVAILABLE',e.message))"
       - name: Probar los flujos de interfaz con backend simulado
         run: |
+          python tests/sea_browser.py
           python tests/beaufort_browser.py
           python tests/audit_stage1_browser.py
           python tests/audit_stage2_browser.py
@@ -72,7 +78,7 @@ jobs:
       - name: Preparar publicación
         run: |
           mkdir _site
-          cp index.html style.css beaufort.js map-legend.js app.js core.js backend.js time-ruler.js wave-field.js coast-views.js zone-analysis.js wind-field.js journey-tools.js password-recovery.js edit-safety.js adventure.js windy.js route-features.js forecast.js install.js sw.js icon-192.png icon-512.png coastal.js coast-data.js coast-progress.js logo.webp sup-pattern.svg icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
+          cp index.html style.css sea-tools.js sea-ui.js share-card.js weather-chart.js beaufort.js map-legend.js app.js core.js backend.js time-ruler.js wave-field.js coast-views.js zone-analysis.js wind-field.js journey-tools.js password-recovery.js edit-safety.js adventure.js windy.js route-features.js forecast.js install.js sw.js icon-192.png icon-512.png coastal.js coast-data.js coast-progress.js logo.webp sup-pattern.svg icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -14,3 +14,4 @@ export function mountMapLegend(parent,map,zoneStatus){
  return {setView(view){sectors.hidden=view!=='zones';},destroy(){observer.disconnect();root.remove();wrap?.style.removeProperty('--map-legend-height');}};
 }
 export function bottomMapInset(map){const box=map.getContainer().getBoundingClientRect(),legend=map.getContainer().querySelector('.map-color-legend');if(!legend||!legend.getBoundingClientRect().height)return 80;return Math.ceil(box.bottom-legend.getBoundingClientRect().top+12);}
+export function rightMapInset(map){const box=map.getContainer().getBoundingClientRect(),actions=map.getContainer().closest('.map-wrap')?.querySelector('.map-actions');return actions?Math.max(82,Math.ceil(box.right-actions.getBoundingClientRect().left+12)):82;}

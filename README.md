@@ -185,3 +185,14 @@ Conversión a partir de los límites inferiores en m/s de la [tabla Beaufort de 
 El viento de referencia a 10 m procede del modelo de Open-Meteo: no se afirma haber medido una media observada de diez minutos. Las rachas son máximos de la hora anterior según la [documentación de Open-Meteo](https://open-meteo.com/en/docs), expresados como equivalencia de velocidad en Beaufort; no son viento sostenido. Los campos conservan punto y hora y se vacían al fallar la carga.
 
 Los límites opcionales de zonas ahora se eligen entre fuerzas 0 y 12, incluidas: elegir fuerza 4 permite toda la fuerza 4 y excluye desde 5. La ordenación y los cálculos geométricos conservan las velocidades originales. Datos antiguos de diario y su texto de viento no se reinterpretan.
+
+
+## 0.14.0 · Herramientas de mar
+
+Las herramientas nuevas están debajo del mapa, conservando la leyenda y la línea temporal compactas. Se añaden: referencia meteorológica nombrada y fijable; marcas y accesos temporales a salida/regreso de la ruta pendiente; gráfica interactiva de viento, rachas y oleaje; límites personales guardados; búsqueda de calas/localidades y lugares propios; modo sol; estado y horas de consulta de las fuentes; hasta ocho favoritas meteorológicas al mismo horario; referencia de planificación y comparación de consultas; salida desde un acceso guardado; observaciones personales comparadas con la previsión guardada; visitas fechadas con fotografía privada; imagen PNG seleccionable para compartir o descargar.
+
+Las preferencias amplían el JSON privado existente sin cambiar tablas ni políticas. Se conservan guía, ritmo y campos anteriores. Los registros de visita amplían lugares o marcadores por ID, sin borrar sus notas. Una referencia se compara solo con el mismo punto y horario; un cambio de planificación se identifica y exige nueva referencia. Las observaciones se guardan separadas y no se atribuyen errores al proveedor si las horas no coinciden. La práctica suspende las nuevas herramientas y no escribe datos reales.
+
+La búsqueda geográfica usa [Photon](https://github.com/komoot/photon) sobre OpenStreetMap, solo tras pulsar Buscar, con caché y ritmo moderado. Se limita a Menorca y no presupone acceso al agua por el nombre de una cala. Los puntos guardados se filtran localmente. La previsión es de modelo, no observación: se muestran datos ausentes, ajustes horarios y la consulta real. Las favoritas consultan la misma hora; las respuestas antiguas no sustituyen una selección nueva.
+
+Compartir crea una imagen local con los campos elegidos; no publica el diario ni crea enlaces públicos. El menú nativo depende del navegador y tiene alternativa PNG. El modo sol se guarda en la cuenta; sin sesión puede utilizarse durante la sesión del navegador. Fuera de las próximas 48 horas del mapa, los accesos a salida/regreso indican el límite sin mostrar otra hora como si fuese la pedida.
