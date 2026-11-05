@@ -40,6 +40,8 @@ try:
    def bounds():
     box=page.locator('.meteo-map-control').bounding_box();m=page.locator('#map').bounding_box();assert box['height']<=64,box;assert box['width']>=m['width']-24;assert box['x']>=m['x'];assert box['x']+box['width']<=m['x']+m['width']+1;assert box['y']+box['height']<=m['y']+m['height']+1;key=page.locator('.map-color-legend').bounding_box();pill=page.locator('#meteo-map-date').bounding_box();assert key['height']<=52,key;assert key['x']>=m['x'] and key['x']+key['width']<=m['x']+m['width']+1;assert key['y']>=m['y'];assert key['y']+key['height']<=pill['y']-2;assert page.locator('.map-color-legend button,.map-color-legend input').count()==0
    bounds()
+   if width==393:
+    page.set_viewport_size({'width':width,'height':600});page.wait_for_timeout(200);bounds();key=page.locator('.map-color-legend').bounding_box();actions=page.locator('.map-actions').bounding_box();assert actions['y']+actions['height']<=key['y']-4;page.set_viewport_size({'width':width,'height':900});page.wait_for_timeout(200);bounds()
    assert '15–<30' in page.locator('.legend-weather').inner_text();assert 'km/h' in page.locator('.legend-weather').inner_text();assert page.locator('.legend-weather svg').count()==4
    assert page.locator('.legend-tracks span').count()==4;assert page.locator('.legend-tracks .dash').count()==1;assert page.locator('.legend-tracks .dots').count()==1;assert page.locator('.legend-sectors').is_hidden()
    assert page.locator('.legend-tracks i').evaluate_all("els=>els.map(e=>e.style.getPropertyValue('--legend-color'))")==['#11796f','#ad5c28','#2678c8','#8650ad']
