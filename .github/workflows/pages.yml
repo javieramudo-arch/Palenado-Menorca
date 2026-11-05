@@ -1,7 +1,7 @@
 name: Comprobar y publicar Paleando Menorca
 on:
   push:
-    branches: [main, coast-views-0120]
+    branches: [main, pending-hidden-0121]
   workflow_dispatch:
 permissions:
   contents: read

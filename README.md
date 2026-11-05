@@ -159,3 +159,8 @@ Los candidatos restantes se ordenan por racha máxima, exposición directa al ol
 Las vistas de recorridos, costa pendiente, zonas para palear y aventura seleccionada son excluyentes. Al salir se recupera la vista anterior y la selección de capas de salidas y planes. Los marcadores, bases y flechas meteorológicas mantienen sus controles propios. No se modifican datos guardados ni políticas del servidor.
 
 En Tus recorridos, salidas de ida verdes y de ida y vuelta naranjas; planes azules discontinuos con base blanca para distinguirlos cuando coinciden. Costa pendiente se muestra sola, violeta y punteada. Dónde palear utiliza franjas semitransparentes únicamente hacia el mar, con un espacio libre sobre la línea de costa; las tarjetas y leyenda explican la exposición sin atribuir seguridad. Una aventura seleccionada aísla su recorrido con halo, nombre y tipo. Durante la edición se prioriza el borrador; al cerrar vuelve la vista previa. Ocultar o suspender una vista no elimina rutas, marcadores ni resultados del análisis. Cambiar la hora sigue invalidando resultados meteorológicos antiguos.
+
+
+## 0.12.1 · Pendientes solo al solicitarlos
+
+Las rutas pendientes azules ya no se muestran junto a las salidas en Tus recorridos. Al activar Capas → Rutas pendientes se abre una vista exclusiva con los trazados azules, sin superponer salidas ni costa pendiente. Desactivarla o pulsar Volver restaura la vista anterior y conserva la preferencia de Mis salidas. Al iniciar la aplicación las rutas pendientes permanecen ocultas. Consultar una aventura pendiente por su ID o editar su borrador sigue mostrando ese recorrido de forma aislada. La costa pendiente por recorrer también mantiene su activación explícita. Ninguna ruta o dato del diario se elimina.

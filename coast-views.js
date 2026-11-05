@@ -3,7 +3,7 @@ export class CoastViews{
  constructor(onChange=()=>{}){this.stack=['routes'];this.onChange=onChange;}
  get current(){return this.stack.at(-1);}
  get previous(){return this.stack.at(-2)||'routes';}
- enter(view){if(!['routes','pending','zones','adventure'].includes(view))throw Error('Vista desconocida');if(view===this.current)return;if(view==='routes')this.stack=['routes'];else{this.stack.push(view);if(this.stack.length>24)this.stack.splice(1,1);}this.onChange();}
+ enter(view){if(!['routes','plans','pending','zones','adventure'].includes(view))throw Error('Vista desconocida');if(view===this.current)return;if(view==='routes')this.stack=['routes'];else{this.stack.push(view);if(this.stack.length>24)this.stack.splice(1,1);}this.onChange();}
  leave(view=this.current){if(view!==this.current)return;if(this.stack.length>1)this.stack.pop();this.onChange();}
  remove(view){this.stack=this.stack.filter(x=>x!==view);if(!this.stack.length)this.stack=['routes'];this.onChange();}
  reset(){this.stack=['routes'];this.onChange();}
