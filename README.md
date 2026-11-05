@@ -164,3 +164,8 @@ En Tus recorridos, salidas de ida verdes y de ida y vuelta naranjas; planes azul
 ## 0.12.1 · Pendientes solo al solicitarlos
 
 Las rutas pendientes azules ya no se muestran junto a las salidas en Tus recorridos. Al activar Capas → Rutas pendientes se abre una vista exclusiva con los trazados azules, sin superponer salidas ni costa pendiente. Desactivarla o pulsar Volver restaura la vista anterior y conserva la preferencia de Mis salidas. Al iniciar la aplicación las rutas pendientes permanecen ocultas. Consultar una aventura pendiente por su ID o editar su borrador sigue mostrando ese recorrido de forma aislada. La costa pendiente por recorrer también mantiene su activación explícita. Ninguna ruta o dato del diario se elimina.
+
+
+## 0.12.2 · Leyenda del mapa sobre la línea temporal
+
+Leyenda horizontal compacta sobre la hora y Play/Pausa: flechas de viento por intensidad (<15, 15–<30, ≥30 km/h), oleaje azul de doble punta, salidas verdes/naranjas, rutas pendientes azules discontinuas y costa pendiente violeta punteada. En móvil ocupa dos filas pequeñas; al activar Zonas para palear añade sus bandas de exposición (menor exposición, revisar/variable, desfavorable y sin datos). El color no clasifica seguridad. La leyenda describe los trazos y no activa capas: las rutas pendientes siguen ocultas hasta solicitarlas. Se retira la leyenda duplicada bajo el mapa y se adapta el margen inferior del encuadre a la nueva altura. Sin cambios en los datos del diario.

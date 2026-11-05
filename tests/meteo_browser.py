@@ -38,8 +38,14 @@ try:
    assert page.locator('#meteo-mini-data').inner_text()!=initial_text
    play_start=int(page.locator('#meteo-map-hours').input_value());page.locator('#meteo-map-play').click();page.locator('#meteo-map-play').click();page.wait_for_timeout(1100);page.locator('#meteo-map-pause').click();stopped=page.locator('#meteo-map-hours').input_value();assert int(stopped)>play_start;page.wait_for_timeout(1000);assert page.locator('#meteo-map-hours').input_value()==stopped
    def bounds():
-    box=page.locator('.meteo-map-control').bounding_box();m=page.locator('#map').bounding_box();assert box['height']<=64,box;assert box['width']>=m['width']-24;assert box['x']>=m['x'];assert box['x']+box['width']<=m['x']+m['width']+1;assert box['y']+box['height']<=m['y']+m['height']+1
+    box=page.locator('.meteo-map-control').bounding_box();m=page.locator('#map').bounding_box();assert box['height']<=64,box;assert box['width']>=m['width']-24;assert box['x']>=m['x'];assert box['x']+box['width']<=m['x']+m['width']+1;assert box['y']+box['height']<=m['y']+m['height']+1;key=page.locator('.map-color-legend').bounding_box();pill=page.locator('#meteo-map-date').bounding_box();assert key['height']<=52,key;assert key['x']>=m['x'] and key['x']+key['width']<=m['x']+m['width']+1;assert key['y']>=m['y'];assert key['y']+key['height']<=pill['y']-2;assert page.locator('.map-color-legend button,.map-color-legend input').count()==0
    bounds()
+   assert '15–<30' in page.locator('.legend-weather').inner_text();assert 'km/h' in page.locator('.legend-weather').inner_text();assert page.locator('.legend-weather svg').count()==4
+   assert page.locator('.legend-tracks span').count()==4;assert page.locator('.legend-tracks .dash').count()==1;assert page.locator('.legend-tracks .dots').count()==1;assert page.locator('.legend-sectors').is_hidden()
+   assert page.locator('.legend-tracks i').evaluate_all("els=>els.map(e=>e.style.getPropertyValue('--legend-color'))")==['#11796f','#ad5c28','#2678c8','#8650ad']
+   assert page.locator('.legend-weather svg').evaluate_all("els=>els.map(e=>e.style.color)")==['rgb(17, 137, 128)','rgb(36, 124, 115)','rgb(134, 80, 173)','rgb(8, 126, 213)']
+   import base64
+   key=page.locator('.map-color-legend').bounding_box();bar=page.locator('.meteo-map-control').bounding_box();preview=page.screenshot(clip={'x':bar['x'],'y':key['y']-3,'width':bar['width'],'height':bar['y']+bar['height']-key['y']+6});print('LEGEND_PREVIEW_'+str(width)+' '+base64.b64encode(preview).decode(),flush=True)
    # Fixed hour marker; moving ruler responds to actual touch/mouse drag and pauses playback.
    pill=page.locator('#meteo-map-date').bounding_box();m=page.locator('#map').bounding_box();assert abs(pill['x']+pill['width']/2-(m['x']+m['width']/2))<=3
    assert page.locator('.ruler-day-name').count()>2;assert page.locator('.ruler-hour').count()>8
@@ -53,14 +59,14 @@ try:
    page.locator('#meteo-map-hours').press('Home')
    bounds();page.locator('[data-map=fullscreen]').click();page.wait_for_timeout(200);bounds();page.locator('[data-map=fullscreen]').click();page.wait_for_timeout(200)
    general=page.locator('#meteo-map-hours').get_attribute('data-time');page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':100});page.wait_for_selector('#meteo-dialog[open]');page.locator('#wind-day').select_option(index=3);assert page.locator('#meteo-map-hours').get_attribute('data-time')==general;page.locator('#meteo-dialog [data-close]').click();page.wait_for_function('meteoTest.state().weatherReturn===null');assert page.locator('.meteo-map-control').is_visible()
-   page.locator('#new-button').click();previous=page.evaluate('meteoTest.state()');page.locator('#meteo-map-hours').focus();page.locator('#meteo-map-hours').press('ArrowRight');assert page.evaluate('meteoTest.state()')==previous
+   page.locator('#new-button').click();previous=page.evaluate('meteoTest.state()');page.locator('.legend-tracks span').first.click();assert page.evaluate('meteoTest.state()')==previous;page.locator('#meteo-map-hours').focus();page.locator('#meteo-map-hours').press('ArrowRight');assert page.evaluate('meteoTest.state()')==previous
    page.locator('#weather-button').click();page.locator('#cancel-draw').click();assert page.evaluate('meteoTest.state().draft')==previous['draft'];assert page.locator('.meteo-map-control').is_visible()
-   hint=page.locator('#map-hint').bounding_box();pill=page.locator('#meteo-map-date').bounding_box();assert hint['y']+hint['height']<pill['y']
+   hint=page.locator('#map-hint').bounding_box();pill=page.locator('#meteo-map-date').bounding_box();assert hint['y']+hint['height']<page.locator('.map-color-legend').bounding_box()['y']
    page.screenshot(path=str(ROOT/f'tests/timeline-{width}.png'));page.locator('.meteo-map-control').screenshot(path=str(ROOT/f'tests/ruler-{width}.png'));
    if width==393:
     import base64
     box=page.locator('.meteo-map-control').bounding_box();preview=page.screenshot(clip={'x':box['x'],'y':box['y']-16,'width':box['width'],'height':box['height']+18});print('RULER_PREVIEW_393 '+base64.b64encode(preview).decode(),flush=True)
    page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':100});page.wait_for_selector('#meteo-dialog[open]');page.route('**/api.open-meteo.com/**',lambda r:r.fulfill(status=503,body='unavailable'));page.locator('#wind-retry').click();page.wait_for_function("document.querySelector('#wind-status').textContent.includes('no disponible')");page.locator('#meteo-dialog [data-close]').click();assert page.locator('#meteo-map-hours').is_disabled();assert page.locator('#meteo-mini-data').inner_text()=='No disponible'
    assert not errors,errors;context.close()
-  browser.close();print('RULER_BROWSER_PASS mobile/desktop fixed central hour, real drag, date/hour ticks, keyboard, narrow/fullscreen: always visible, <=64px, full bottom width/fullscreen, now to 48h, separate play/pause, arrow field redraw, independent Meteo, draft isolation, missing data. Services simulated.')
+  browser.close();print('RULER_BROWSER_PASS mobile/desktop compact horizontal legend above ruler/hour, exact arrow/route colors and patterns, passive legend during draft, fullscreen/mobile bounds; fixed central hour, real drag, date/hour ticks, keyboard, narrow/fullscreen: always visible, <=64px, full bottom width/fullscreen, now to 48h, separate play/pause, arrow field redraw, independent Meteo, draft isolation, missing data. Services simulated.')
 finally:server.shutdown()
