@@ -174,3 +174,14 @@ Leyenda horizontal compacta sobre la hora y Play/Pausa: flechas de viento por in
 ## 0.12.3 · Viento más visible
 
 Flechas y leyenda de viento: verde fosforito (<15 km/h), naranja butano (15–<30 km/h) y rojo tomate (≥30 km/h). Las flechas tienen mayor opacidad y un contorno discreto para distinguirlas sobre tierra y mar. Los colores de rutas, costa pendiente, zonas y oleaje conservan su significado.
+
+
+## 0.13.0 · Beaufort y rachas separadas
+
+Viento previsto y rachas se expresan por separado en Beaufort en el mapa, Meteo, previsión completa y por horas, perfiles/comparación de rutas y análisis de zonas. Verde fosforito 0–2, naranja butano 3–4 y rojo tomate desde 5, aplicado a cada valor de forma independiente. Las flechas conservan dirección y animación y se colorean solo por el viento previsto, nunca por las rachas. El oleaje mantiene metros y flechas azules. Windy se solicita con metricWind=bft y conserva su calendario propio.
+
+Conversión a partir de los límites inferiores en m/s de la [tabla Beaufort de Meteocat](https://www.meteo.cat/wpweb/divulgacio/la-prediccio-meteorologica/escales-de-vent-i-mar/escala-beaufort/), aplicados sin redondear previamente la velocidad recibida. No disponible no equivale a calma; la calma real se muestra como fuerza 0. La escala se limita a 0–12. Las velocidades del proveedor permanecen internamente en km/h, sin migraciones ni modificaciones de observaciones del diario.
+
+El viento de referencia a 10 m procede del modelo de Open-Meteo: no se afirma haber medido una media observada de diez minutos. Las rachas son máximos de la hora anterior según la [documentación de Open-Meteo](https://open-meteo.com/en/docs), expresados como equivalencia de velocidad en Beaufort; no son viento sostenido. Los campos conservan punto y hora y se vacían al fallar la carga.
+
+Los límites opcionales de zonas ahora se eligen entre fuerzas 0 y 12, incluidas: elegir fuerza 4 permite toda la fuerza 4 y excluye desde 5. La ordenación y los cálculos geométricos conservan las velocidades originales. Datos antiguos de diario y su texto de viento no se reinterpretan.

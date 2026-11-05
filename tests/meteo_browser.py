@@ -32,7 +32,7 @@ try:
    page.goto('http://127.0.0.1:8083/',wait_until='networkidle');page.wait_for_function("!document.querySelector('#meteo-map-hours').disabled")
    assert page.locator('.meteo-map-control').is_visible();assert not page.locator('#wind-panel').is_visible();assert page.locator('.meteo-map-control button').count()==2
    assert page.locator('.meteo-map-control .windsock,.meteo-map-control .wind-compass,#meteo-details,#meteo-hide').count()==0
-   assert 'km/h' in page.locator('#meteo-mini-data').inner_text();assert 'Rachas' not in page.locator('.meteo-map-control').inner_text()
+   assert 'Bft' in page.locator('#meteo-mini-data').inner_text();assert 'Rachas' in page.locator('#meteo-mini-data').inner_text();assert 'km/h' not in page.locator('#meteo-mini-data').inner_text()
    first=int(page.locator('#meteo-map-hours').get_attribute('data-time'));page.locator('#meteo-map-hours').focus();page.locator('#meteo-map-hours').press('End');last=int(page.locator('#meteo-map-hours').get_attribute('data-time'));assert last-first==48*3600;page.locator('#meteo-map-hours').press('Home')
    initial_image=page.locator('.wind-canvas').evaluate('(c)=>c.toDataURL()');initial_text=page.locator('#meteo-mini-data').inner_text();page.locator('#meteo-map-hours').press('ArrowRight');page.locator('#meteo-map-hours').press('ArrowRight');assert page.locator('.wind-canvas').evaluate('(c)=>c.toDataURL()')!=initial_image
    assert page.locator('#meteo-mini-data').inner_text()!=initial_text
@@ -42,7 +42,7 @@ try:
    bounds()
    if width==393:
     page.set_viewport_size({'width':width,'height':600});page.wait_for_timeout(200);bounds();key=page.locator('.map-color-legend').bounding_box();actions=page.locator('.map-actions').bounding_box();assert actions['y']+actions['height']<=key['y']-4;page.set_viewport_size({'width':width,'height':900});page.wait_for_timeout(200);bounds()
-   assert '15–<30' in page.locator('.legend-weather').inner_text();assert 'km/h' in page.locator('.legend-weather').inner_text();assert page.locator('.legend-weather svg').count()==4
+   assert '0–2' in page.locator('.legend-weather').inner_text();assert '3–4' in page.locator('.legend-weather').inner_text();assert '≥5' in page.locator('.legend-weather').inner_text();assert 'Bft' in page.locator('.legend-weather').inner_text();assert page.locator('.legend-weather svg').count()==4
    assert page.locator('.legend-tracks span').count()==4;assert page.locator('.legend-tracks .dash').count()==1;assert page.locator('.legend-tracks .dots').count()==1;assert page.locator('.legend-sectors').is_hidden()
    assert page.locator('.legend-tracks i').evaluate_all("els=>els.map(e=>e.style.getPropertyValue('--legend-color'))")==['#11796f','#ad5c28','#2678c8','#8650ad']
    assert page.locator('.legend-weather svg').evaluate_all("els=>els.map(e=>e.style.color)")==['rgb(124, 255, 0)','rgb(255, 121, 0)','rgb(255, 99, 71)','rgb(8, 126, 213)']
@@ -68,7 +68,7 @@ try:
    if width==393:
     import base64
     box=page.locator('.meteo-map-control').bounding_box();preview=page.screenshot(clip={'x':box['x'],'y':box['y']-16,'width':box['width'],'height':box['height']+18});print('RULER_PREVIEW_393 '+base64.b64encode(preview).decode(),flush=True)
-   page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':100});page.wait_for_selector('#meteo-dialog[open]');page.route('**/api.open-meteo.com/**',lambda r:r.fulfill(status=503,body='unavailable'));page.locator('#wind-retry').click();page.wait_for_function("document.querySelector('#wind-status').textContent.includes('no disponible')");page.locator('#meteo-dialog [data-close]').click();assert page.locator('#meteo-map-hours').is_disabled();assert page.locator('#meteo-mini-data').inner_text()=='No disponible'
+   page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':100});page.wait_for_selector('#meteo-dialog[open]');page.route('**/api.open-meteo.com/**',lambda r:r.fulfill(status=503,body='unavailable'));page.locator('#wind-retry').click();page.wait_for_function("document.querySelector('#wind-status').textContent.includes('no disponible')");page.locator('#meteo-dialog [data-close]').click();assert page.locator('#meteo-map-hours').is_disabled();assert page.locator('#meteo-mini-data .is-missing').count()==2;assert page.locator('#meteo-mini-data [data-force]').count()==0
    assert not errors,errors;context.close()
   browser.close();print('RULER_BROWSER_PASS mobile/desktop compact horizontal legend above ruler/hour, exact arrow/route colors and patterns, passive legend during draft, fullscreen/mobile bounds; fixed central hour, real drag, date/hour ticks, keyboard, narrow/fullscreen: always visible, <=64px, full bottom width/fullscreen, now to 48h, separate play/pause, arrow field redraw, independent Meteo, draft isolation, missing data. Services simulated.')
 finally:server.shutdown()

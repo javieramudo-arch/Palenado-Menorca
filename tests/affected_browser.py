@@ -66,7 +66,7 @@ try:
   page.locator('#cancel-draw').click();assert page.locator('#draw-bar').is_visible();assert page.evaluate("localStorage.getItem('paleando:0.1:draft:test-user')")==before
   page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':250})
   page.wait_for_function("document.querySelector('#weather-result')?.textContent.includes('19 °C')")
-  result=page.locator('#weather-result').inner_text();assert '12 km/h' in result and '0.6 m' in result and 'Viene del N' in result and 'Viene del E' in result and 'Europe/Madrid' in result and 'Punto marítimo' in result
+  result=page.locator('#weather-result').inner_text();assert 'Fuerza 2 · Beaufort' in result and '0.6 m' in result and 'Viene del N' in result and 'Viene del E' in result and 'Europe/Madrid' in result and 'Punto marítimo' in result
   assert page.evaluate("localStorage.getItem('paleando:0.1:draft:test-user')")==before
   page.locator('#content-dialog [data-close]').click();assert page.locator('#draw-bar').is_visible()
   fail_marine[0]=True;page.locator('#weather-button').click();page.locator('#map').click(position={'x':140,'y':250})
