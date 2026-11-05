@@ -56,10 +56,10 @@ jobs:
         run: node -e "fetch('https://supabase.com/changelog.md').then(r=>r.text()).then(t=>console.log('SUPABASE_CHANGELOG',t.slice(0,1600))).catch(e=>console.log('CHANGELOG_UNAVAILABLE',e.message))"
       - name: Probar los flujos de interfaz con backend simulado
         run: |
+          python tests/beaufort_browser.py
           python tests/audit_stage1_browser.py
           python tests/audit_stage2_browser.py
           python tests/meteo_browser.py
-          python tests/beaufort_browser.py
           python tests/waves_browser.py
           python tests/arrows_browser.py
           python tests/zones_browser.py
