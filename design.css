@@ -53,3 +53,7 @@ footer{padding:16px 0 22px;gap:12px;line-height:1.5}footer span{font-size:11px}#
 @media(prefers-reduced-motion:reduce){.summary-track{scroll-behavior:auto}.coast-card #energy{transition:none}}
 
 .coast-card #goal-percent{font:750 1.8rem/1 Outfit,sans-serif;color:#c9f3df;letter-spacing:-.7px}.coast-caption #goal-copy{font-size:inherit;color:inherit}.summary-info .ui-icon{width:20px;height:20px}
+/* Generous hit areas retain the existing 44px timeline and 52px sun timeline. */
+#selected-route button{width:44px;height:44px;min-width:44px;min-height:44px}.checkbox-label,.guide-card .checkbox-label{min-height:44px}
+.ruler-playback{left:2px;bottom:-1px;gap:0}.ruler-playback button,.sun-mode .ruler-playback button{width:44px;min-width:44px;height:44px;min-height:44px;padding:14px}.ruler-playback svg{width:16px;height:16px}
+.meteo-map-control #meteo-ruler{left:96px;top:0;height:44px}.meteo-map-control #meteo-ruler-track{top:16px}.sun-mode .meteo-map-control #meteo-ruler{left:96px;top:0;height:52px}.sun-mode .meteo-map-control #meteo-ruler-track{top:21px}

@@ -32,6 +32,8 @@ def check_case(page,errors,width):
  assert page.locator('#summary-next-edit').get_attribute('data-id')=='plan-one'
  assert page.locator('#summary-next-metrics').inner_text().endswith('2 h 00 min')
  assert not page.locator('#pending-coast').is_checked()
+ for selector in ['#refresh','#menu-button','#goal-button','#summary-coast','#summary-next-view','#summary-next-edit','#summary-favorites','#meteo-map-play','#meteo-map-pause','#meteo-ruler']:
+  box=page.locator(selector).bounding_box();assert box['width']>=44 and box['height']>=44,(selector,box)
  sizes=page.locator('.summary-card').evaluate_all('cards=>cards.map(c=>c.getBoundingClientRect().height)');assert max(sizes)-min(sizes)<2,sizes
  track=page.locator('#summary-track').bounding_box();first=page.locator('.summary-card').first.bounding_box()
  if width<700:
@@ -58,7 +60,7 @@ def check_case(page,errors,width):
  draft=page.evaluate('seaTest.state().draft');assert draft['id']=='plan-one'
  page.locator('#summary-next-edit').click();assert page.locator('#entry-form [name=notes]').input_value()=='Conservar durante el rediseño';page.locator('#close-editor').click()
  page.locator('#summary-next-view').click();assert page.locator('#adventure-sheet [data-action=edit]').get_attribute('data-id')=='plan-one'
- image=page.locator('#adventure-image');sheet=page.locator('#adventure-sheet').bounding_box();map_box=page.locator('#map-wrap').bounding_box();assert sheet['y']+sheet['height']<=map_box['y']
+ image=page.locator('#adventure-image');close_box=page.locator('#clear-selection').bounding_box();assert close_box['width']>=44 and close_box['height']>=44;sheet=page.locator('#adventure-sheet').bounding_box();map_box=page.locator('#map-wrap').bounding_box();assert sheet['y']+sheet['height']<=map_box['y']
  if image.is_visible():assert image.bounding_box()['y']+image.bounding_box()['height']<=sheet['y']
  if width<700:assert page.locator('#summary-position').inner_text()=='3 de 4'
  page.locator('#summary-next-view').click();assert page.evaluate('seaTest.state().draft.data.notes')==draft['data']['notes']
