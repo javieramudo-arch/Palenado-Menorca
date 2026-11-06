@@ -32,7 +32,7 @@
 .diary-period-tools label{font-size:12px;font-weight:600;flex:0 0 185px}
 .diary-period-tools select{min-height:44px;width:100%;margin:4px 0 0;border-radius:10px}
 .diary-months{padding:9px 1px 5px;flex:1}
-.diary-months button{text-transform:capitalize;font-weight:500;background:#ffffffb5;font-size:12px}
+.diary-months button{font-weight:500;background:#ffffffb5;font-size:12px}
 .diary-months button[aria-pressed=true]{background:#073e43;color:#fff;border-color:#073e43}
 #diary-summary{display:grid;grid-template-columns:.65fr 1fr 1.5fr;gap:12px;border:1px solid #b7d6c9;border-radius:14px;background:linear-gradient(120deg,#edf7ee,#e0f0ea);padding:14px 18px;margin-top:14px}
 #diary-summary>div{display:flex;flex-direction:column;gap:4px;min-width:0}
@@ -43,7 +43,7 @@
 .diary-results-line{display:flex;gap:10px;justify-content:space-between;align-items:center;margin:10px 0 0;min-height:28px}
 #diary-results{font-size:12px;color:#486962;margin:0}
 #trip-list.card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0}
-.diary-month-heading{grid-column:1/-1;text-transform:capitalize;font:600 16px/1.4 Outfit,sans-serif;display:flex;align-items:center;gap:12px;margin:12px 0 -5px}
+.diary-month-heading{grid-column:1/-1;font:600 16px/1.4 Outfit,sans-serif;display:flex;align-items:center;gap:12px;margin:12px 0 -5px}
 .diary-month-heading:after{content:'';height:1px;background:#bdd3c7;flex:1}
 #trip-list .diary-card{min-width:0;align-self:start;padding:0;overflow:hidden;border:1px solid var(--diary-line);background:#fffefa;box-shadow:0 5px 20px #073e4307;border-radius:18px}
 .diary-card-header{display:flex;gap:3px;align-items:center;padding:13px 12px 11px 16px}
@@ -114,3 +114,15 @@
  .diary-action-sheet .dialog-heading{margin-bottom:12px}.diary-icon:focus-visible{outline-offset:-3px}
 }
 @media(prefers-reduced-motion:reduce){#view-diario *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Keep the first adventure within reach: period menu complements the quick month strip. */
+.diary-chips button{display:inline-flex;align-items:center;gap:5px}.diary-chips svg{width:16px;height:16px;flex-shrink:0}
+.diary-period-tools{flex-direction:row;align-items:center;gap:8px;margin-top:10px}
+.diary-period-tools .diary-calendar{position:relative;flex:0 0 44px;width:44px;height:44px;order:2;display:grid;place-items:center;background:#fffef9;border:1px solid #b4d0c1;border-radius:11px;cursor:pointer;margin:0}
+.diary-calendar-label{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden;white-space:nowrap}
+.diary-calendar svg{width:21px;height:21px}
+.diary-period-tools .diary-calendar select{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;font-size:16px}
+.diary-calendar:focus-within{outline:3px solid #dd974a;outline-offset:2px}
+.diary-months{min-width:0;margin:0;padding:5px 1px}
+#view-diario .advanced-filters .diary-year{min-width:0;width:auto}
+@media(max-width:700px){#view-diario .search-label{flex:1;min-width:0}#view-diario .diary-view-switch{flex:0 0 auto}#view-diario .view-heading{margin-bottom:10px}#view-diario .search-label input{padding-right:8px}#view-diario .diary-tools{padding:10px}#diary-summary{margin-top:8px}.diary-period-tools{margin-top:9px}}

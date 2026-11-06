@@ -37,13 +37,13 @@ def filters_and_layout(page,errors,width):
  page.locator('#filter-zone').fill('Norte');assert '18 aventuras' in page.locator('#diary-results').inner_text()
  page.locator('#filter-rating').select_option('4');assert page.locator('#trip-list .diary-card').count()==0
  page.locator('#reset-filters').click();assert '36 aventuras' in page.locator('#diary-results').inner_text();page.locator('.advanced-filters summary').click()
- page.locator('#year-filter').select_option('2025');assert page.locator('#trip-list .diary-card').count()==1;assert 'junio de 2025' in page.locator('.diary-month-heading').inner_text().lower()
+ page.locator('.advanced-filters summary').click();page.locator('#year-filter').select_option('2025');page.locator('.advanced-filters summary').click();assert page.locator('#trip-list .diary-card').count()==1;assert 'junio de 2025' in page.locator('.diary-month-heading').inner_text().lower()
  all_filter(page);page.locator('#diary-period').select_option('2025-06');assert page.locator('#trip-list .diary-card').count()==1
  all_filter(page);page.locator('[data-diary-chip=month]').click();current=str(today)[:7];expected=sum(t['data']['date'].startswith(current) for t in trips);assert str(expected)+' aventuras' in page.locator('#diary-results').inner_text()
  all_filter(page);page.locator('[data-diary-view=list]').click();assert page.locator('#trip-list').get_attribute('data-view')=='list';assert page.locator('.diary-gallery').first.is_hidden()
  page.locator('[data-diary-view=cards]').click();assert page.locator('.diary-gallery').first.is_visible()
  assert page.evaluate('testRows()')==original
- page.evaluate('window.scrollTo(0,0)');page.wait_for_timeout(100);shot(page,str(width))
+ page.evaluate('window.scrollTo(0,0)');page.wait_for_timeout(100);assert page.locator('#trip-list .diary-card').first.bounding_box()['y']<700;shot(page,str(width))
  page.locator('[data-diary-id=diary-00]').scroll_into_view_if_needed();shot(page,'card-'+str(width))
  # Enlarged text and short mobile viewport: content scrolls, actions retain their own space.
  if width==393:
