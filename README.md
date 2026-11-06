@@ -1,6 +1,6 @@
 # Paleando Menorca
 
-Diario personal de paddle surf. Edición 0.15.0, creada desde cero con HTML, CSS y JavaScript. Publicada en GitHub Pages, con instalación PWA opcional y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
+Diario personal de paddle surf. Edición 0.16.0, creada desde cero con HTML, CSS y JavaScript. Publicada en GitHub Pages, con instalación PWA opcional y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
 
 ## Publicación
 
@@ -205,3 +205,10 @@ Cabecera compacta con sincronización visible, navegación inferior en móvil y 
 Herramientas agrupadas bajo el mapa, iconos SVG coherentes, paneles inferiores en móvil con cabecera y acciones accesibles, ajustes a la altura visual del navegador/teclado y modo sol conservado. Se mantienen la leyenda, la línea temporal, las flechas y todos sus colores, la ficha de aventura antes del mapa y las funciones de borradores/recuperación/práctica. No modifica backend, datos privados, permisos, cálculos ni preferencias.
 
 La verificación de interfaz utiliza Chromium real con cuenta y proveedores simulados, incluidos límites y siete favoritas de prueba. Se revisan capturas de móvil/escritorio. El teclado, los gestos y la compartición en un Android físico requieren comprobación en ese dispositivo.
+
+
+## 0.16.0 · Primera pantalla más compacta
+
+Carrusel sin puntos ni flechas visibles, con tarjetas centradas y un fragmento de las vecinas cuando existen. Conserva límites y teclado. Leyenda suave en la esquina superior izquierda, sin banner decorativo; colores, trazos, textos accesibles y atribuciones conservados. El encuadre reserva leyenda superior, controles derechos y línea temporal inferior.
+
+La altura del mapa se adapta al espacio útil móvil para mostrar Planificar ruta, Nueva salida y Meteo por encima de la navegación, con Continuar borrador después de las acciones. Controles derechos algo más bajos y en dos columnas cuando falta altura. El mapa aumenta al editar o mostrar una aventura. Sin cambios en datos, permisos, cálculos ni peticiones automáticas. Pruebas de ventanas móviles reducidas simulan el espacio que dejan las barras del navegador; no equivalen a verificar un Android físico.

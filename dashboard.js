@@ -48,13 +48,12 @@ export function routeEstimate(entry,preferences={}){
 const stamp=t=>new Date(t).toLocaleString('es-ES',{timeZone:'Europe/Madrid',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 
 export function mountDashboard(api){
- const root=document.querySelector('#summary-carousel'),track=root.querySelector('#summary-track'),cards=[...track.querySelectorAll('.summary-card')],dots=[...root.querySelectorAll('[data-summary-index]')];
+ const root=document.querySelector('#summary-carousel'),track=root.querySelector('#summary-track'),cards=[...track.querySelectorAll('.summary-card')];
  let index=0,width=0,frame=0,resizeFrame=0,weatherKey='';const reduce=matchMedia('(prefers-reduced-motion: reduce)');
  const overflow=()=>track.scrollWidth>track.clientWidth+2;
  const offset=i=>cards[i].offsetLeft-cards[0].offsetLeft;
- function position(){root.querySelector('#summary-position').textContent=overflow()?`${index+1} de ${cards.length}`:`${cards.length} resúmenes`;dots.forEach((d,i)=>d.classList.toggle('selected',i===index));root.querySelector('#summary-prev').disabled=!overflow()||index===0;root.querySelector('#summary-next').disabled=!overflow()||index===cards.length-1;}
+ function position(){root.querySelector('#summary-position').textContent=overflow()?`${index+1} de ${cards.length}`:`${cards.length} resúmenes`;}
  function select(i){index=Math.max(0,Math.min(cards.length-1,i));track.scrollTo({left:overflow()?offset(index):0,behavior:reduce.matches?'instant':'smooth'});position();}
- root.querySelector('#summary-prev').onclick=()=>select(index-1);root.querySelector('#summary-next').onclick=()=>select(index+1);
  track.addEventListener('keydown',e=>{if(e.target!==track)return;const keys={ArrowLeft:index-1,ArrowRight:index+1,Home:0,End:cards.length-1};if(e.key in keys){e.preventDefault();select(keys[e.key]);}});
  track.addEventListener('scroll',()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{if(!overflow())return;index=cards.reduce((best,_,i)=>Math.abs(offset(i)-track.scrollLeft)<Math.abs(offset(best)-track.scrollLeft)?i:best,0);position();});},{passive:true});
  const observer=new ResizeObserver(()=>{if(!track.clientWidth||track.clientWidth===width)return;width=track.clientWidth;cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{track.scrollTo({left:overflow()?offset(index):0,behavior:'instant'});position();});});observer.observe(track);
@@ -75,5 +74,26 @@ export function mountDashboard(api){
   if(!data){out.innerHTML='<span>Consulta el viento, las rachas y las olas.</span>';return;}
   out.innerHTML=`<span class="summary-weather-values">Viento ${beaufortMarkup(data.sample.windSpeed,{compact:true})} · Rachas ${beaufortMarkup(data.sample.windGust,{compact:true,gust:true})} · Olas ${Number.isFinite(data.sample.waveHeight)?number(data.sample.waveHeight)+' m':'No disponible'}</span><small>${esc(data.title)} · ${stamp(data.sample.time*1000)} · Open-Meteo</small><small>Consulta ${stamp(data.fetchedAt)}${data.stale?' · actualiza para consultar de nuevo':''}</small>`;
  }
- position();return {render,renderWeather,reset(){select(0);weatherKey='';renderWeather();},getIndex:()=>index,destroy(){observer.disconnect();cancelAnimationFrame(frame);cancelAnimationFrame(resizeFrame);}};
+ const layout=mountMapLayout(api);position();return {fitLayout:layout.schedule,render,renderWeather,reset(){select(0);weatherKey='';renderWeather();},getIndex:()=>index,destroy(){layout.destroy();observer.disconnect();cancelAnimationFrame(frame);cancelAnimationFrame(resizeFrame);}};
+}
+
+// Only allocates screen space. It never changes geographic data or forecast time.
+export function mapViewportLayout({height,mapTop,navHeight,actionHeight,sun=false,focused=false}){
+ const available=Math.floor(height-mapTop-navHeight-actionHeight-12),vertical=sun?326:306;
+ const desired=focused?Math.min(480,Math.max(310,height*.55)):Math.min(480,available),compact=desired<vertical;
+ return {height:Math.max(compact?(sun?216:196):vertical,desired),compact,available};
+}
+function mountMapLayout(api){
+ const wrap=document.querySelector('#map-wrap'),view=document.querySelector('#view-mapa'),actions=document.querySelector('.map-bottom'),nav=document.querySelector('.tabs');let frame=0;
+ function fit(){frame=0;if(view.hidden||!wrap.clientWidth||window.innerWidth>700||wrap.classList.contains('fullscreen-map')){if(window.innerWidth>700)wrap.style.removeProperty('--map-fit-height');return;}
+  const viewport=window.visualViewport,height=viewport?.height||window.innerHeight,focused=!document.querySelector('#adventure-panel').hidden||!document.querySelector('#draw-bar').hidden;
+  const next=mapViewportLayout({height,mapTop:wrap.getBoundingClientRect().top+window.scrollY,navHeight:nav.getBoundingClientRect().height,actionHeight:actions.getBoundingClientRect().height,sun:document.body.classList.contains('sun-mode'),focused});
+  const value=Math.round(next.height)+'px',changed=wrap.style.getPropertyValue('--map-fit-height')!==value||wrap.classList.contains('compact-map-controls')!==next.compact;
+  wrap.style.setProperty('--map-fit-height',value);wrap.classList.toggle('compact-map-controls',next.compact);if(changed)api.onLayout?.();
+ }
+ function schedule(){if(!frame)frame=requestAnimationFrame(fit);}
+ const resize=new ResizeObserver(schedule);for(const el of [document.querySelector('#summary-carousel'),document.querySelector('.topbar'),document.querySelector('.sync-line'),actions,nav])resize.observe(el);
+ const mutation=new MutationObserver(schedule);for(const el of [document.body,view,wrap,document.querySelector('#adventure-panel'),document.querySelector('#draw-bar')])mutation.observe(el,{attributes:true,attributeFilter:['class','hidden']});
+ window.addEventListener('resize',schedule);window.visualViewport?.addEventListener('resize',schedule);wrap.addEventListener('maplegendchange',schedule);schedule();
+ return {schedule,destroy(){cancelAnimationFrame(frame);resize.disconnect();mutation.disconnect();window.removeEventListener('resize',schedule);window.visualViewport?.removeEventListener('resize',schedule);wrap.removeEventListener('maplegendchange',schedule);}};
 }

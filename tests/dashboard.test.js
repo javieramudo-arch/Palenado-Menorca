@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {nextAdventure,monthActivity,routeEstimate} from '../dashboard.js';
+import {nextAdventure,monthActivity,routeEstimate,mapViewportLayout} from '../dashboard.js';
 const now=Date.UTC(2026,10,6,12),points=[[39.94,3.93],[39.95,3.94]],plan=(id,start,extra={})=>({id,title:'Mismo nombre',kind:'plan',data:{plannedStart:start,date:'2026-11-06',points,source:'coastal',...extra}});
 test('next adventure uses future dates and IDs, excludes deleted/past/invalid dates, and does not mutate data',()=>{
  const list=[plan('later','2026-11-07T12:00:00Z'),plan('old','2026-11-06T11:00:00Z'),plan('next','2026-11-06T14:00:00Z'),{...plan('deleted','2026-11-06T13:00:00Z'),deleted_at:'2026-11-06'},plan('invalid','wrong'),plan('invalid-date','',{date:'2026-99-99'})],copy=structuredClone(list);
@@ -16,3 +16,5 @@ test('summary estimates reuse saved manual duration and full route distance, wit
  const entry=plan('a','2026-11-07T12:00:00Z',{roundtrip:true,stopMinutes:10,paceMinutesPerKm:15}),copy=structuredClone(entry),computed=routeEstimate(entry),one=routeEstimate({...entry,data:{...entry.data,roundtrip:false}});
  assert.equal(computed.km,one.km*2);assert(computed.minutes>one.minutes);assert.equal(routeEstimate({...entry,data:{...entry.data,estimatedMinutes:125,estimateMode:'manual'}}).minutes,125);assert.equal(routeEstimate({...entry,data:{...entry.data,points:[]}}).km,null);assert.deepEqual(entry,copy);
 });
+
+test('mobile map allocation reserves bottom navigation and main actions, with compact controls for short screens',()=>{const short=mapViewportLayout({height:600,mapTop:242,navHeight:66,actionHeight:44});assert.equal(short.height,236);assert(short.compact);assert(short.height+242+66+44<600);const tall=mapViewportLayout({height:900,mapTop:242,navHeight:66,actionHeight:44});assert.equal(tall.height,480);assert(!tall.compact);assert(mapViewportLayout({height:600,mapTop:1200,navHeight:66,actionHeight:44,focused:true}).height>=310);});

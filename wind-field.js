@@ -1,5 +1,5 @@
 import {beaufortMarkup,beaufortText,toBeaufort} from './beaufort.js?v=0.13.0';
-import {mountMapLegend,windColor} from './map-legend.js?v=0.14.0';
+import {mountMapLegend,windColor} from './map-legend.js?v=0.16.0';
 import {loadWaves,mountWaveLayer} from './wave-field.js?v=0.12.2';
 import {mountTimeRuler} from './time-ruler.js?v=0.14.0';
 import {direction,dayKey,originRadians} from './forecast.js?v=0.10.1';

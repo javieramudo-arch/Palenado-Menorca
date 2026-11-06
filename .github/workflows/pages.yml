@@ -1,7 +1,7 @@
 name: Comprobar y publicar Paleando Menorca
 on:
   push:
-    branches: [main, interface-0150]
+    branches: [main, compact-0160]
   workflow_dispatch:
 permissions:
   contents: read
@@ -62,6 +62,7 @@ jobs:
         run: node -e "fetch('https://supabase.com/changelog.md').then(r=>r.text()).then(t=>console.log('SUPABASE_CHANGELOG',t.slice(0,1600))).catch(e=>console.log('CHANGELOG_UNAVAILABLE',e.message))"
       - name: Probar los flujos de interfaz con backend simulado
         run: |
+          python tests/compact_browser.py
           python tests/redesign_browser.py
           python tests/sea_browser.py
           python tests/beaufort_browser.py
@@ -101,6 +102,6 @@ jobs:
           SITE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
           curl --fail --silent --show-error --retry 5 --retry-delay 3 --retry-all-errors "${SITE_URL}?release=${GITHUB_SHA}" -o /tmp/paleando-live.html
-          python3 -c "from pathlib import Path; text=Path('/tmp/paleando-live.html').read_text(); assert 'Paleando Menorca' in text and 'app.js?v=0.15.0' in text"
-          curl --fail --silent --show-error --retry 3 "${SITE_URL}app.js?v=0.15.0" -o /tmp/paleando-live.js
-          python3 -c "from pathlib import Path; assert 'v0.15.0' in Path('/tmp/paleando-live.js').read_text()"
+          python3 -c "from pathlib import Path; text=Path('/tmp/paleando-live.html').read_text(); assert 'Paleando Menorca' in text and 'app.js?v=0.16.0' in text"
+          curl --fail --silent --show-error --retry 3 "${SITE_URL}app.js?v=0.16.0" -o /tmp/paleando-live.js
+          python3 -c "from pathlib import Path; assert 'v0.16.0' in Path('/tmp/paleando-live.js').read_text()"

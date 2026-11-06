@@ -38,9 +38,9 @@ def check_case(page,errors,width):
  track=page.locator('#summary-track').bounding_box();first=page.locator('.summary-card').first.bounding_box()
  if width<700:
   assert track['width']-first['width']>=20
-  assert page.locator('#summary-prev').is_disabled()
-  go_card(page,3);assert page.locator('#summary-next').is_disabled()
-  page.locator('#summary-track').press('ArrowRight');assert page.locator('#summary-next').is_disabled()
+  assert page.locator('#summary-prev,#summary-next,.summary-pagination').count()==0
+  go_card(page,3);assert page.locator('#summary-position').inner_text()=='4 de 4'
+  page.locator('#summary-track').press('ArrowRight');assert page.locator('#summary-position').inner_text()=='4 de 4'
   # Real pointer drag on the dedicated carousel; the Leaflet view remains fixed.
   before=page.evaluate('seaTest.map().getCenter()');go_card(page,0);box=page.locator('#summary-track').bounding_box()
   page.locator('#summary-track').dispatch_event('pointerdown',{'pointerType':'touch','pointerId':41,'clientX':box['x']+250,'clientY':box['y']+70,'bubbles':True})
