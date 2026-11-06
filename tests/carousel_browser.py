@@ -11,6 +11,14 @@ def wheel(page,direction,index):
  page.mouse.move(box['x']+box['width']/2,box['y']+50);page.mouse.wheel(direction*step,0);selected(page,index)
  page.wait_for_timeout(160)
 
+def touch(page,context,direction,index):
+ session=context.new_cdp_session(page);session.send('Emulation.setTouchEmulationEnabled',{'enabled':True,'maxTouchPoints':1})
+ box=page.locator('#summary-track').bounding_box();a=box['x']+box['width']-60 if direction>0 else box['x']+60;b=box['x']+60 if direction>0 else box['x']+box['width']-60;y=box['y']+60
+ session.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':a,'y':y,'id':1}]})
+ for step in range(1,13):
+  x=a+(b-a)*step/12;session.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':x,'y':y,'id':1}]});page.wait_for_timeout(30)
+ page.wait_for_timeout(180);session.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]});selected(page,index);session.detach()
+
 failures=[]
 try:
  with sync_playwright() as p:
@@ -23,6 +31,8 @@ try:
     assert page.locator('.summary-card').count()==4 and page.locator('[data-carousel-copy]').count()==8
     assert page.locator('[data-carousel-copy]').evaluate_all("nodes=>nodes.every(n=>n.inert&&n.getAttribute('aria-hidden')==='true'&&[...n.querySelectorAll('button')].every(b=>b.tabIndex===-1))")
     assert page.evaluate("(()=>{const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);return ids.length===new Set(ids).size;})()")
+    # Emulated physical touch crosses both seams, including a held finger before release.
+    track.focus();track.press('End');selected(page,3);touch(page,context,1,0);touch(page,context,-1,3);track.focus();track.press('Home');selected(page,0)
     # Wheel goes through both physical boundaries; wait for the ORIGINAL to centre.
     for direction,count in [(1,12),(-1,12)]:
      index=0
@@ -60,5 +70,5 @@ try:
    finally:context.close()
   browser.close()
  assert not failures,failures
- print('CIRCULAR_BROWSER_PASS: native wheel crosses both boundaries for multiple cycles; keyboard and rapid repeats wrap; neighbours shown on both sides; current copies, unique IDs, inert duplicates; correct original actions, no requests/writes; selection restored across modal/tab/desktop layout. Real Chromium, simulated account/services; physical touch remains unverified.',flush=True)
+ print('CIRCULAR_BROWSER_PASS: native wheel and emulated touch cross both boundaries for multiple cycles; keyboard and rapid repeats wrap; neighbours shown on both sides; current copies, unique IDs, inert duplicates; correct original actions, no requests/writes; selection restored across modal/tab/desktop layout. Real Chromium, simulated account/services; physical touch remains unverified.',flush=True)
 finally:h.server.shutdown()
