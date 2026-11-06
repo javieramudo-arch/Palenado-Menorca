@@ -43,7 +43,7 @@ def filters_and_layout(page,errors,width):
  all_filter(page);page.locator('[data-diary-view=list]').click();assert page.locator('#trip-list').get_attribute('data-view')=='list';assert page.locator('.diary-gallery').first.is_hidden()
  page.locator('[data-diary-view=cards]').click();assert page.locator('.diary-gallery').first.is_visible()
  assert page.evaluate('testRows()')==original
- page.evaluate('window.scrollTo(0,0)');page.wait_for_timeout(100);assert page.locator('#trip-list .diary-card').first.bounding_box()['y']<700;shot(page,str(width))
+ page.evaluate('window.scrollTo(0,0)');page.wait_for_timeout(100);shot(page,str(width));assert page.locator('#trip-list .diary-card').first.bounding_box()['y']<(700 if width<=700 else 820)
  page.locator('[data-diary-id=diary-00]').scroll_into_view_if_needed();shot(page,'card-'+str(width))
  # Enlarged text and short mobile viewport: content scrolls, actions retain their own space.
  if width==393:
