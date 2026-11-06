@@ -98,7 +98,7 @@ def check_case(page,errors,width):
  if width<700:go_card(page,0)
  page.evaluate('document.activeElement?.blur();window.scrollTo(0,0)');page.wait_for_timeout(100)
  print('DESIGN_PREVIEW_'+str(width),base64.b64encode(page.screenshot()).decode(),flush=True)
- if width<700:go_card(page,3);print('DESIGN_CALAS_'+str(width),base64.b64encode(page.locator('.favorites-card').screenshot()).decode(),flush=True)
+ if width<700:go_card(page,3);print('DESIGN_CALAS_'+str(width),base64.b64encode(page.locator('.summary-card.favorites-card').screenshot()).decode(),flush=True)
  assert not errors,errors
 
 failures=[]
