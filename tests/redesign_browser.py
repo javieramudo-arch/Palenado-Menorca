@@ -1,5 +1,5 @@
 """Real Chromium layout/gesture checks; account, photos and providers are simulated."""
-import os,json,base64,traceback
+import os,json,base64,traceback,time,math
 from pathlib import Path
 import sea_browser as h
 from playwright.sync_api import sync_playwright
@@ -24,7 +24,7 @@ def go_card(page,index):
  page.wait_for_timeout(100)
 
 def check_case(page,errors,width):
- rows=page.evaluate('testRows()');requests=[]
+ rows=page.evaluate('testRows()');requests=[];page.evaluate('document.activeElement?.blur()');print('DESIGN_INITIAL_'+str(width),base64.b64encode(page.screenshot()).decode(),flush=True)
  page.on('request',lambda r:requests.append(r.url) if 'open-meteo.com/' in r.url else None)
  assert page.locator('.summary-card').count()==4
  assert page.locator('#summary-favorites-count').inner_text()=='7 calas favoritas'
@@ -75,7 +75,7 @@ def check_case(page,errors,width):
  page.locator('#wind-full').click();page.wait_for_selector('svg[data-weather-chart]');visible_bounds(page,'#content-dialog',width,900);assert page.locator('#windy-map iframe').count()==1
  h.close(page);assert page.evaluate('seaTest.state().draft.data.notes')==draft['data']['notes']
  # Favorite summary reuses the exact consulted time/source without new network calls.
- page.locator('#summary-favorites').click();page.locator('#sea-favorites-form button').click();page.wait_for_function("document.querySelectorAll('#sea-favorites-results .card').length===7")
+ page.locator('#summary-favorites').click();page.locator('#sea-favorites-form [name=time]').fill(page.evaluate('(t)=>seaTest.format(t)',math.ceil(time.time()/60)*60+60));page.locator('#sea-favorites-form button').click();page.wait_for_function("document.querySelectorAll('#sea-favorites-results .card').length===7")
  visible_bounds(page,'#content-dialog .dialog-heading',width,900);h.close(page)
  assert 'Cala de prueba' in page.locator('#summary-weather').inner_text();assert 'Open-Meteo' in page.locator('#summary-weather').inner_text()
  count=len(requests)
@@ -94,7 +94,7 @@ def check_case(page,errors,width):
  # Capture actual browser rendering, with only fixture data.
  page.locator('#clear-selection').click();page.evaluate('window.scrollTo(0,0)')
  if width<700:go_card(page,0)
- page.evaluate('window.scrollTo(0,0)');page.wait_for_timeout(100)
+ page.evaluate('document.activeElement?.blur();window.scrollTo(0,0)');page.wait_for_timeout(100)
  print('DESIGN_PREVIEW_'+str(width),base64.b64encode(page.screenshot()).decode(),flush=True)
  if width<700:go_card(page,3);print('DESIGN_CALAS_'+str(width),base64.b64encode(page.locator('.favorites-card').screenshot()).decode(),flush=True)
  assert not errors,errors

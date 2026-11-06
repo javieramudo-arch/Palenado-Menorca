@@ -4,6 +4,7 @@ import {durationText,estimatePlan} from './route-features.js?v=0.12.0';
 import {beaufortMarkup} from './beaufort.js?v=0.13.0';
 
 export const icons={
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
  coast:'<path d="M3 17c4-7 7 3 11-5s5-3 7-7M3 21h18"/>',
  diary:'<path d="M5 3h14v18H5zM8 7h8M8 11h8M8 15h5M3 6h4M3 12h4M3 18h4"/>',
  route:'<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M5 16v-5a4 4 0 0 1 4-4h4a3 3 0 0 1 0 6h-2a3 3 0 0 0 0 6h5l3-3"/>',
