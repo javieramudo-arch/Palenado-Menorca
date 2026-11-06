@@ -1,6 +1,6 @@
 # Paleando Menorca
 
-Diario personal de paddle surf. Edición 0.16.1, creada desde cero con HTML, CSS y JavaScript. Publicada en GitHub Pages, con instalación PWA opcional y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
+Diario personal de paddle surf. Edición 0.17.0, creada desde cero con HTML, CSS y JavaScript. Publicada en GitHub Pages, con instalación PWA opcional y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
 
 ## Publicación
 
@@ -219,3 +219,8 @@ La altura del mapa se adapta al espacio útil móvil para mostrar Planificar rut
 En móvil y tamaños intermedios, el desplazamiento continúa desde la última tarjeta a la primera y desde la primera a la última. Mantiene desplazamiento nativo, ajuste al centro y teclado. Dos ciclos de presentación inertes se sincronizan con las cuatro tarjetas originales; sus IDs son únicos y no añaden acciones, datos ni consultas. Al terminar el desplazamiento se normaliza la posición sobre las originales sin cambiar el contenido visible. En escritorio se conservan las cuatro tarjetas en fila.
 
 Las copias quedan fuera del foco y la lectura asistida. Se conservan el resto del diseño, el mapa y sus botones visibles en la primera pantalla.
+
+
+## 0.17.0 · Cuaderno de mar
+
+Diario con búsqueda por nombre, lugares y notas; filtros combinables, accesos por mes, resumen del conjunto filtrado y vistas de tarjetas/lista. Galerías privadas horizontales con carga al acercarse a la pantalla, favoritos y menú de acciones que reutiliza edición, repetición, GPX y eliminación recuperable. Renderizado progresivo de doce aventuras; conserva filtros, posición y fotografía seleccionada durante la sesión. Sin migraciones ni cambios en los cálculos, en los datos guardados o en la navegación del mapa. Las horas del resumen son únicamente las duraciones reales registradas.

@@ -24,7 +24,7 @@ try:
   page.add_init_script("""let leaflet;Object.defineProperty(window,'L',{configurable:true,get:()=>leaflet,set:v=>{leaflet=v;v.Map.addInitHook(function(){window.testMap=this;});}});""")
   page.goto('http://127.0.0.1:8081/',wait_until='networkidle');page.wait_for_selector('#map.leaflet-container')
   def edit(identifier):
-   page.locator('[data-tab=diario]').click();page.locator(f'#trip-list [data-action=edit][data-id="{identifier}"]').click()
+   page.locator('[data-tab=diario]').click();page.locator(f'#trip-list [data-diary-more="{identifier}"]').click();page.locator(f'#content-body [data-action=edit][data-id="{identifier}"]').click()
   def map_click(lat,lng):
    point=page.evaluate('([a,b])=>{const p=testMap.latLngToContainerPoint([a,b]);return {x:p.x,y:p.y}}',[lat,lng]);page.locator('#map').click(position=point)
   assert 'revisar su trazado' in page.locator('#coast-status').inner_text();page.locator('[data-tab=diario]').click();assert page.locator('#trip-list .card').count()==2
