@@ -1,5 +1,5 @@
 """Real Chromium UI; isolated fixture account, private-photo service and weather providers."""
-import os,json,time,base64
+import os,json,time,base64,traceback
 from datetime import datetime,timedelta,timezone
 import sea_browser as h
 from playwright.sync_api import sync_playwright
@@ -37,7 +37,7 @@ def filters_and_layout(page,errors,width):
  page.locator('#filter-zone').fill('Norte');assert '18 aventuras' in page.locator('#diary-results').inner_text()
  page.locator('#filter-rating').select_option('4');assert page.locator('#trip-list .diary-card').count()==0
  page.locator('#reset-filters').click();assert '36 aventuras' in page.locator('#diary-results').inner_text();page.locator('.advanced-filters summary').click()
- page.locator('#year-filter').select_option('2025');assert page.locator('#trip-list .diary-card').count()==1;assert 'junio de 2025' in page.locator('.diary-month-heading').inner_text()
+ page.locator('#year-filter').select_option('2025');assert page.locator('#trip-list .diary-card').count()==1;assert 'junio de 2025' in page.locator('.diary-month-heading').inner_text().lower()
  all_filter(page);page.locator('#diary-period').select_option('2025-06');assert page.locator('#trip-list .diary-card').count()==1
  all_filter(page);page.locator('[data-diary-chip=month]').click();current=str(today)[:7];expected=sum(t['data']['date'].startswith(current) for t in trips);assert str(expected)+' aventuras' in page.locator('#diary-results').inner_text()
  all_filter(page);page.locator('[data-diary-view=list]').click();assert page.locator('#trip-list').get_attribute('data-view')=='list';assert page.locator('.diary-gallery').first.is_hidden()
@@ -111,7 +111,7 @@ try:
     context,page,errors=h.setup(browser,width,len(seed))
     try:case(page,errors,width);print('DIARY_CASE_PASS',width,case.__name__,flush=True)
     except Exception as error:
-     failures.append((width,case.__name__,repr(error)));print('DIARY_CASE_FAIL',width,case.__name__,repr(error),flush=True);print('DIARY_FAILURE_BODY',page.locator('body').inner_text()[-6000:],flush=True);page.screenshot(path=str(h.ROOT/f'tests/diary-fail-{width}-{case.__name__}.png'))
+     failures.append((width,case.__name__,repr(error)));traceback.print_exc();print('DIARY_CASE_FAIL',width,case.__name__,repr(error),flush=True);print('DIARY_FAILURE_BODY',page.locator('body').inner_text()[-6000:],flush=True);page.screenshot(path=str(h.ROOT/f'tests/diary-fail-{width}-{case.__name__}.png'))
     finally:context.close()
   browser.close()
  assert not failures,failures
