@@ -16,7 +16,7 @@ def weather(url):
  q=parse_qs(urlparse(url).query);lats=q.get('latitude',['40'])[0].split(',');lons=q.get('longitude',['4'])[0].split(',');t=int(time.time())//3600*3600;times=[t+i*3600 for i in range(168)]
  rows=[{'latitude':float(a),'longitude':float(b),'hourly':{'time':times,'temperature_2m':[20]*168,'wind_speed_10m':[scenario['wind']]*168,'wind_gusts_10m':[scenario['gust']]*168,'wind_direction_10m':[45]*168,'wave_height':[scenario['wave']]*168,'wave_direction':[90]*168,'wave_period':[5]*168}} for a,b in zip(lats,lons)]
  return rows if len(rows)>1 else rows[0]
-def setup(browser,width):
+def setup(browser,width,expected_entries=4):
  scenario.update(wind=12,gust=36,wave=.5,weather_fail=False,search_fail=False)
  context=browser.new_context(viewport={'width':width,'height':900},service_workers='block',reduced_motion='reduce');page=context.new_page();errors=[]
  page.on('pageerror',lambda e:(errors.append(str(e)),print('SEA_PAGE_ERROR',str(e),flush=True)));page.on('dialog',lambda d:d.accept())
@@ -28,7 +28,7 @@ def setup(browser,width):
  page.route('**/embed.windy.com/**',lambda r:r.fulfill(body='<html>Windy simulado</html>',content_type='text/html'))
  hook="\nwindow.seaTest={wind:()=>windUI,map:()=>map,openForecast,startPractice,endPractice,view:viewAdventure,state:()=>({draft:structuredClone(draft),mode,practice:!!practice,entries:structuredClone(entries),account:user?.id}),format:madridInput};"
  page.route('**/app.js*',lambda r:r.fulfill(body=(ROOT/'app.js').read_text()+hook,content_type='text/javascript'))
- page.goto('http://127.0.0.1:8086/',wait_until='networkidle');page.wait_for_function("window.seaTest&&seaTest.state().entries.length===4&&!document.querySelector('#meteo-map-hours').disabled")
+ page.goto('http://127.0.0.1:8086/',wait_until='networkidle');page.wait_for_function("n=>window.seaTest&&seaTest.state().entries.length===n&&!document.querySelector('#meteo-map-hours').disabled",arg=expected_entries)
  return context,page,errors
 def close(page):
  if page.locator('#content-dialog').is_visible():page.locator('#content-dialog [data-close]').click()
@@ -82,18 +82,21 @@ def observation_share(page,errors,width):
 def auto_baseline(page,errors,width):
  adventure(page,'plan-one');page.locator('#adventure-sheet [data-action=edit]').click();start=page.evaluate('(t)=>seaTest.format(t)',future+3600);page.locator('#entry-form [name=plannedStart]').fill(start);assert page.locator('#entry-form [name=date]').input_value()==start[:10];page.locator('#entry-form [name=notes]').fill('Guardar con previsión');page.locator('#save-entry').click();page.wait_for_function("!document.querySelector('#editor-dialog').open");row=page.evaluate("testRows().find(e=>e.id==='plan-one')");assert row['data']['forecastBaseline']['targetTime']==future+3600;assert row['data']['notes']=='Guardar con previsión';assert row['data']['estimatedMinutes']==120;assert page.evaluate('seaTest.state().draft') is None;check(page,errors,width)
 
-failures=[]
-try:
- with sync_playwright() as p:
-  browser=p.chromium.launch(channel=os.environ.get('PALEANDO_BROWSER_CHANNEL'))
-  for width in [393,1280]:
-   for group in [map_tools,personal_tools,route_tools,place_tools,observation_share,auto_baseline]:
-    context,page,errors=setup(browser,width)
-    try:group(page,errors,width);print('SEA_CASE_PASS',width,group.__name__,flush=True)
-    except Exception as e:
-     failures.append((width,group.__name__,str(e)));print('SEA_CASE_FAIL',width,group.__name__,repr(e),flush=True);print('SEA_FAILURE_BODY',page.locator('body').inner_text()[-6500:],flush=True);page.screenshot(path=str(ROOT/f'tests/sea-fail-{width}-{group.__name__}.png'))
-    finally:context.close()
-  browser.close()
- assert not failures,failures
- print('SEA_BROWSER_PASS mobile/desktop: pinned references, departure/return, sun mode, freshness; preferences and favorites; geographic search; saved baseline/comparison; protected draft and interactive chart; dated access/photo and departure; observations vs saved forecast; PNG creation/export and account isolation. Account/services simulated; native Android share requires device verification.',flush=True)
-finally:server.shutdown()
+def run():
+ failures=[]
+ try:
+  with sync_playwright() as p:
+   browser=p.chromium.launch(channel=os.environ.get('PALEANDO_BROWSER_CHANNEL'))
+   for width in [393,1280]:
+    for group in [map_tools,personal_tools,route_tools,place_tools,observation_share,auto_baseline]:
+     context,page,errors=setup(browser,width)
+     try:group(page,errors,width);print('SEA_CASE_PASS',width,group.__name__,flush=True)
+     except Exception as e:
+      failures.append((width,group.__name__,str(e)));print('SEA_CASE_FAIL',width,group.__name__,repr(e),flush=True);print('SEA_FAILURE_BODY',page.locator('body').inner_text()[-6500:],flush=True);page.screenshot(path=str(ROOT/f'tests/sea-fail-{width}-{group.__name__}.png'))
+     finally:context.close()
+   browser.close()
+  assert not failures,failures
+  print('SEA_BROWSER_PASS mobile/desktop: pinned references, departure/return, sun mode, freshness; preferences and favorites; geographic search; saved baseline/comparison; protected draft and interactive chart; dated access/photo and departure; observations vs saved forecast; PNG creation/export and account isolation. Account/services simulated; native Android share requires device verification.',flush=True)
+ finally:server.shutdown()
+
+if __name__=='__main__':run()

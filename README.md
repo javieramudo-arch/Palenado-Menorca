@@ -1,6 +1,6 @@
 # Paleando Menorca
 
-Diario personal de paddle surf. Edición 0.14.0, creada desde cero con HTML, CSS y JavaScript. Publicada en GitHub Pages, con instalación PWA opcional y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
+Diario personal de paddle surf. Edición 0.15.0, creada desde cero con HTML, CSS y JavaScript. Publicada en GitHub Pages, con instalación PWA opcional y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
 
 ## Publicación
 
@@ -196,3 +196,12 @@ Las preferencias amplían el JSON privado existente sin cambiar tablas ni polít
 La búsqueda geográfica usa [Photon](https://github.com/komoot/photon) sobre OpenStreetMap, solo tras pulsar Buscar, con caché y ritmo moderado. Se limita a Menorca y no presupone acceso al agua por el nombre de una cala. Los puntos guardados se filtran localmente. La previsión es de modelo, no observación: se muestran datos ausentes, ajustes horarios y la consulta real. Las favoritas consultan la misma hora; las respuestas antiguas no sustituyen una selección nueva.
 
 Compartir crea una imagen local con los campos elegidos; no publica el diario ni crea enlaces públicos. El menú nativo depende del navegador y tiene alternativa PNG. El modo sol se guarda en la cuenta; sin sesión puede utilizarse durante la sesión del navegador. Fuera de las próximas 48 horas del mapa, los accesos a salida/regreso indican el límite sin mostrar otra hora como si fuese la pedida.
+
+
+## 0.15.0 · Interfaz deportiva y móvil
+
+Cabecera compacta con sincronización visible, navegación inferior en móvil y cuatro tarjetas de resumen: costa única, distancia paleada/mes, próxima ruta por ID/fecha y favoritas meteorológicas. Carrusel manual con límites, teclado, controles, posición conservada entre detalles y vista de cuatro columnas en escritorio. El resumen de calas reutiliza solo consultas ya realizadas y muestra punto/horas/fuente, sin peticiones al deslizar. Abrir una tarjeta no activa capas.
+
+Herramientas agrupadas bajo el mapa, iconos SVG coherentes, paneles inferiores en móvil con cabecera y acciones accesibles, ajustes a la altura visual del navegador/teclado y modo sol conservado. Se mantienen la leyenda, la línea temporal, las flechas y todos sus colores, la ficha de aventura antes del mapa y las funciones de borradores/recuperación/práctica. No modifica backend, datos privados, permisos, cálculos ni preferencias.
+
+La verificación de interfaz utiliza Chromium real con cuenta y proveedores simulados, incluidos límites y siete favoritas de prueba. Se revisan capturas de móvil/escritorio. El teclado, los gestos y la compartición en un Android físico requieren comprobación en ese dispositivo.
