@@ -40,7 +40,7 @@ def check_case(page,errors,width):
   assert track['width']-first['width']>=20
   assert page.locator('#summary-prev,#summary-next,.summary-pagination').count()==0
   go_card(page,3);assert page.locator('#summary-position').inner_text()=='4 de 4'
-  page.locator('#summary-track').press('ArrowRight');assert page.locator('#summary-position').inner_text()=='4 de 4'
+  page.locator('#summary-track').press('ArrowRight');assert page.locator('#summary-position').inner_text()=='1 de 4'
   # Real pointer drag on the dedicated carousel; the Leaflet view remains fixed.
   before=page.evaluate('seaTest.map().getCenter()');go_card(page,0);box=page.locator('#summary-track').bounding_box()
   page.locator('#summary-track').dispatch_event('pointerdown',{'pointerType':'touch','pointerId':41,'clientX':box['x']+250,'clientY':box['y']+70,'bubbles':True})
@@ -120,5 +120,5 @@ try:
   assert page.evaluate('document.documentElement.scrollWidth')<=393
   assert page.locator('#summary-coast').is_visible();assert not errors;context.close();browser.close()
  assert not failures,failures
- print('DESIGN_BROWSER_PASS mobile/desktop: finite accessible carousel; correct IDs, totals, estimates and empty states; no automatic queries or layer changes; protected drafts/preferences; fixed navigation; map/legend/fullscreen; sheets/forecast/Windy; consulted favorite summary; short viewport and text enlargement. Real Chromium, simulated account/services; physical Android keyboard/touch not claimed.',flush=True)
+ print('DESIGN_BROWSER_PASS mobile/desktop: circular accessible carousel; correct IDs, totals, estimates and empty states; no automatic queries or layer changes; protected drafts/preferences; fixed navigation; map/legend/fullscreen; sheets/forecast/Windy; consulted favorite summary; short viewport and text enlargement. Real Chromium, simulated account/services; physical Android keyboard/touch not claimed.',flush=True)
 finally:h.server.shutdown()

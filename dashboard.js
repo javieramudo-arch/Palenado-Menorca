@@ -1,3 +1,4 @@
+import {mountLoopCarousel} from './carousel.js?v=0.16.1';
 import {measuredTripKm,number,escapeHtml as esc} from './core.js?v=0.12.0';
 import {dayKey} from './forecast.js?v=0.12.0';
 import {durationText,estimatePlan} from './route-features.js?v=0.12.0';
@@ -49,14 +50,7 @@ const stamp=t=>new Date(t).toLocaleString('es-ES',{timeZone:'Europe/Madrid',day:
 
 export function mountDashboard(api){
  const root=document.querySelector('#summary-carousel'),track=root.querySelector('#summary-track'),cards=[...track.querySelectorAll('.summary-card')];
- let index=0,width=0,frame=0,resizeFrame=0,weatherKey='';const reduce=matchMedia('(prefers-reduced-motion: reduce)');
- const overflow=()=>track.scrollWidth>track.clientWidth+2;
- const offset=i=>cards[i].offsetLeft-cards[0].offsetLeft;
- function position(){root.querySelector('#summary-position').textContent=overflow()?`${index+1} de ${cards.length}`:`${cards.length} resúmenes`;}
- function select(i){index=Math.max(0,Math.min(cards.length-1,i));track.scrollTo({left:overflow()?offset(index):0,behavior:reduce.matches?'instant':'smooth'});position();}
- track.addEventListener('keydown',e=>{if(e.target!==track)return;const keys={ArrowLeft:index-1,ArrowRight:index+1,Home:0,End:cards.length-1};if(e.key in keys){e.preventDefault();select(keys[e.key]);}});
- track.addEventListener('scroll',()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{if(!overflow())return;index=cards.reduce((best,_,i)=>Math.abs(offset(i)-track.scrollLeft)<Math.abs(offset(best)-track.scrollLeft)?i:best,0);position();});},{passive:true});
- const observer=new ResizeObserver(()=>{if(!track.clientWidth||track.clientWidth===width)return;width=track.clientWidth;cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{track.scrollTo({left:overflow()?offset(index):0,behavior:'instant'});position();});});observer.observe(track);
+ let weatherKey='';const carousel=mountLoopCarousel({track,cards,status:root.querySelector('#summary-position')});
  root.addEventListener('click',e=>{const b=e.target.closest('[data-summary-action]');if(!b)return;api.action(b.dataset.summaryAction,b.dataset.id);});
  for(const el of document.querySelectorAll('[data-ui-icon]'))el.innerHTML=icon(el.dataset.uiIcon);
  for(const b of document.querySelectorAll('[data-tab]')){const name=b.dataset.tab;b.setAttribute('aria-current',b.classList.contains('active')?'page':'false');b.innerHTML=icon({mapa:'map',diario:'diary',progreso:'progress'}[name])+`<span>${{mapa:'Mapa',diario:'Diario',progreso:'Progreso'}[name]}</span>`;}
@@ -74,7 +68,7 @@ export function mountDashboard(api){
   if(!data){out.innerHTML='<span>Consulta el viento, las rachas y las olas.</span>';return;}
   out.innerHTML=`<span class="summary-weather-values">Viento ${beaufortMarkup(data.sample.windSpeed,{compact:true})} · Rachas ${beaufortMarkup(data.sample.windGust,{compact:true,gust:true})} · Olas ${Number.isFinite(data.sample.waveHeight)?number(data.sample.waveHeight)+' m':'No disponible'}</span><small>${esc(data.title)} · ${stamp(data.sample.time*1000)} · Open-Meteo</small><small>Consulta ${stamp(data.fetchedAt)}${data.stale?' · actualiza para consultar de nuevo':''}</small>`;
  }
- const layout=mountMapLayout(api);position();return {fitLayout:layout.schedule,render,renderWeather,reset(){select(0);weatherKey='';renderWeather();},getIndex:()=>index,destroy(){layout.destroy();observer.disconnect();cancelAnimationFrame(frame);cancelAnimationFrame(resizeFrame);}};
+ const layout=mountMapLayout(api);return {fitLayout:layout.schedule,render,renderWeather,reset(){carousel.reset();weatherKey='';renderWeather();},getIndex:carousel.getIndex,destroy(){layout.destroy();carousel.destroy();}};
 }
 
 // Only allocates screen space. It never changes geographic data or forecast time.

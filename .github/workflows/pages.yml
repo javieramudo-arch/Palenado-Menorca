@@ -1,7 +1,7 @@
 name: Comprobar y publicar Paleando Menorca
 on:
   push:
-    branches: [main, compact-0160]
+    branches: [main, circular-0161]
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,6 +20,7 @@ jobs:
           node-version: 22
       - name: Comprobar código y distancias
         run: |
+          node --check carousel.js
           node --check dashboard.js
           node --check app.js
           node --check backend.js
@@ -39,7 +40,7 @@ jobs:
           node --check coast-views.js
           node --check time-ruler.js
           node --check journey-tools.js
-          node --test tests/audit-fixes.test.js tests/password-recovery.test.js tests/experience.test.js tests/timeline.test.js tests/ruler.test.js tests/waves.test.js tests/arrows.test.js tests/zones.test.js tests/coast-views.test.js tests/beaufort.test.js tests/sea-tools.test.js tests/dashboard.test.js
+          node --test tests/audit-fixes.test.js tests/password-recovery.test.js tests/experience.test.js tests/timeline.test.js tests/ruler.test.js tests/waves.test.js tests/arrows.test.js tests/zones.test.js tests/coast-views.test.js tests/beaufort.test.js tests/sea-tools.test.js tests/dashboard.test.js tests/carousel.test.js
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -62,6 +63,7 @@ jobs:
         run: node -e "fetch('https://supabase.com/changelog.md').then(r=>r.text()).then(t=>console.log('SUPABASE_CHANGELOG',t.slice(0,1600))).catch(e=>console.log('CHANGELOG_UNAVAILABLE',e.message))"
       - name: Probar los flujos de interfaz con backend simulado
         run: |
+          python tests/carousel_browser.py
           python tests/compact_browser.py
           python tests/redesign_browser.py
           python tests/sea_browser.py
@@ -81,7 +83,7 @@ jobs:
       - name: Preparar publicación
         run: |
           mkdir _site
-          cp index.html design.css dashboard.js style.css sea-tools.js sea-ui.js share-card.js weather-chart.js beaufort.js map-legend.js app.js core.js backend.js time-ruler.js wave-field.js coast-views.js zone-analysis.js wind-field.js journey-tools.js password-recovery.js edit-safety.js adventure.js windy.js route-features.js forecast.js install.js sw.js icon-192.png icon-512.png coastal.js coast-data.js coast-progress.js logo.webp sup-pattern.svg icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
+          cp index.html design.css carousel.js dashboard.js style.css sea-tools.js sea-ui.js share-card.js weather-chart.js beaufort.js map-legend.js app.js core.js backend.js time-ruler.js wave-field.js coast-views.js zone-analysis.js wind-field.js journey-tools.js password-recovery.js edit-safety.js adventure.js windy.js route-features.js forecast.js install.js sw.js icon-192.png icon-512.png coastal.js coast-data.js coast-progress.js logo.webp sup-pattern.svg icon.svg guide-photo.svg manifest.webmanifest .nojekyll _site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -102,6 +104,6 @@ jobs:
           SITE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
           curl --fail --silent --show-error --retry 5 --retry-delay 3 --retry-all-errors "${SITE_URL}?release=${GITHUB_SHA}" -o /tmp/paleando-live.html
-          python3 -c "from pathlib import Path; text=Path('/tmp/paleando-live.html').read_text(); assert 'Paleando Menorca' in text and 'app.js?v=0.16.0' in text"
-          curl --fail --silent --show-error --retry 3 "${SITE_URL}app.js?v=0.16.0" -o /tmp/paleando-live.js
-          python3 -c "from pathlib import Path; assert 'v0.16.0' in Path('/tmp/paleando-live.js').read_text()"
+          python3 -c "from pathlib import Path; text=Path('/tmp/paleando-live.html').read_text(); assert 'Paleando Menorca' in text and 'app.js?v=0.16.1' in text"
+          curl --fail --silent --show-error --retry 3 "${SITE_URL}app.js?v=0.16.1" -o /tmp/paleando-live.js
+          python3 -c "from pathlib import Path; assert 'v0.16.1' in Path('/tmp/paleando-live.js').read_text()"

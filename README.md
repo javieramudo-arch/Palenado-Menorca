@@ -1,6 +1,6 @@
 # Paleando Menorca
 
-Diario personal de paddle surf. Edición 0.16.0, creada desde cero con HTML, CSS y JavaScript. Publicada en GitHub Pages, con instalación PWA opcional y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
+Diario personal de paddle surf. Edición 0.16.1, creada desde cero con HTML, CSS y JavaScript. Publicada en GitHub Pages, con instalación PWA opcional y sin compilación. El repositorio conserva por ahora el nombre técnico `Palenado-Menorca`.
 
 ## Publicación
 
@@ -212,3 +212,10 @@ La verificación de interfaz utiliza Chromium real con cuenta y proveedores simu
 Carrusel sin puntos ni flechas visibles, con tarjetas centradas y un fragmento de las vecinas cuando existen. Conserva límites y teclado. Leyenda suave en la esquina superior izquierda, sin banner decorativo; colores, trazos, textos accesibles y atribuciones conservados. El encuadre reserva leyenda superior, controles derechos y línea temporal inferior.
 
 La altura del mapa se adapta al espacio útil móvil para mostrar Planificar ruta, Nueva salida y Meteo por encima de la navegación, con Continuar borrador después de las acciones. Controles derechos algo más bajos y en dos columnas cuando falta altura. El mapa aumenta al editar o mostrar una aventura. Sin cambios en datos, permisos, cálculos ni peticiones automáticas. Pruebas de ventanas móviles reducidas simulan el espacio que dejan las barras del navegador; no equivalen a verificar un Android físico.
+
+
+## 0.16.1 · Carrusel circular
+
+En móvil y tamaños intermedios, el desplazamiento continúa desde la última tarjeta a la primera y desde la primera a la última. Mantiene desplazamiento nativo, ajuste al centro y teclado. Dos ciclos de presentación inertes se sincronizan con las cuatro tarjetas originales; sus IDs son únicos y no añaden acciones, datos ni consultas. Al terminar el desplazamiento se normaliza la posición sobre las originales sin cambiar el contenido visible. En escritorio se conservan las cuatro tarjetas en fila.
+
+Las copias quedan fuera del foco y la lectura asistida. Se conservan el resto del diseño, el mapa y sus botones visibles en la primera pantalla.

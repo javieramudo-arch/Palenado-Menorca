@@ -39,7 +39,7 @@ def carousel(page):
   assert abs((r['left']+r['right'])/2-(box['x']+box['width']/2))<=2,(r,box)
   assert bounds[index-1]['right']>=box['x']+8
   assert bounds[index+1]['left']<=box['x']+box['width']-8
- track.press('End');page.wait_for_timeout(60);last=track.evaluate('e=>e.scrollLeft');track.press('ArrowRight');assert track.evaluate('e=>e.scrollLeft')==last
+ track.press('End');page.wait_for_timeout(60);track.press('ArrowRight');assert page.locator('#summary-position').inner_text()=='1 de 4'
  track.press('Home');page.evaluate('document.activeElement?.blur()')
 
 failures=[]
@@ -85,5 +85,5 @@ try:
    finally:context.close()
   browser.close()
  assert not failures,failures
- print('COMPACT_BROWSER_PASS: centred adjacent cards, no dots/arrows, finite scrolling unchanged; first-screen actions including draft; light upper-left legend with preserved colour keys; separate right controls/timeline in small and sun/fullscreen layouts; actual route fit pixels; unchanged data and saved draft. Real Chromium, account/providers simulated; physical Android/browser chrome not claimed.',flush=True)
+ print('COMPACT_BROWSER_PASS: centred adjacent cards, no dots/arrows, circular scrolling; first-screen actions including draft; light upper-left legend with preserved colour keys; separate right controls/timeline in small and sun/fullscreen layouts; actual route fit pixels; unchanged data and saved draft. Real Chromium, account/providers simulated; physical Android/browser chrome not claimed.',flush=True)
 finally:h.server.shutdown()
