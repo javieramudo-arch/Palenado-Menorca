@@ -13,7 +13,7 @@ def fold(page,height):
   r=page.locator(selector).bounding_box()
   assert r and r['y']>=0 and r['y']+r['height']<=nav['y']-2,(selector,r,nav,height)
   assert r['height']>=44
-  assert page.locator(selector).evaluate("e=>{const r=e.getBoundingClientRect();return e.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}")
+  assert page.locator(selector).evaluate("e=>{const r=e.getBoundingClientRect();return e.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}"),(selector,page.locator(selector).evaluate("e=>{const r=e.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.outerHTML.slice(0,240);}"))
  return page.locator('#map').bounding_box()
 
 def legend_bounds(page):
@@ -58,7 +58,7 @@ try:
      fold(page,height);resume=page.locator('#resume-draft').bounding_box();actions=page.locator('.map-bottom').bounding_box();assert resume['y']>=actions['y']+actions['height']
     legend_bounds(page)
     if (width,height) in [(393,640),(360,568),(1280,900)]:
-     settle(page);page.evaluate('document.activeElement?.blur()');print('COMPACT_PREVIEW_'+str(width)+'_'+str(height),base64.b64encode(page.screenshot()).decode(),flush=True)
+     settle(page);page.wait_for_timeout(350);page.evaluate('document.activeElement?.blur()');print('COMPACT_PREVIEW_'+str(width)+'_'+str(height),base64.b64encode(page.screenshot()).decode(),flush=True)
     # Legend is passive even during real route editing.
     page.locator('#resume-draft').click();page.locator('#edit-track').click();before=page.evaluate('seaTest.state().draft');page.locator('.map-color-legend').click();assert page.evaluate('seaTest.state().draft')==before
     legend_bounds(page);page.locator('#finish-draw').click();page.locator('#close-editor').click()
@@ -71,6 +71,8 @@ try:
     page.locator('#clear-selection').click()
     if width<700:fold(page,height)
     page.locator('#sea-sun').click();page.wait_for_timeout(160);legend_bounds(page)
+    # The existing six-second status toast is transient; verify the steady initial layout.
+    page.wait_for_function("document.querySelector('#toast').hidden")
     if width<700 and height>=600:fold(page,height)
     page.locator('[data-map=fullscreen]').click();page.wait_for_timeout(160);legend_bounds(page);page.locator('[data-map=fullscreen]').click();page.wait_for_timeout(160);legend_bounds(page)
     assert page.evaluate('document.documentElement.scrollWidth')<=width
