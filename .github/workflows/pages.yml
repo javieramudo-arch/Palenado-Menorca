@@ -112,7 +112,7 @@ jobs:
           SITE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
           curl --fail --silent --show-error --retry 5 --retry-delay 3 --retry-all-errors "${SITE_URL}?release=${GITHUB_SHA}" -o /tmp/paleando-live.html
-          python3 -c "from pathlib import Path; text=Path('/tmp/paleando-live.html').read_text(); assert 'Paleando Menorca' in text and 'app.js?v=0.19.0' in text"
-          curl --fail --silent --show-error --retry 3 "${SITE_URL}app.js?v=0.19.0" -o /tmp/paleando-live.js
+          python3 -c "from pathlib import Path; text=Path('/tmp/paleando-live.html').read_text(); assert 'Paleando Menorca' in text and 'app.js?v=0.19.1' in text"
+          curl --fail --silent --show-error --retry 3 "${SITE_URL}app.js?v=0.19.1" -o /tmp/paleando-live.js
           python3 -c "from pathlib import Path; assert 'progress.js?v=0.18.0' in Path('/tmp/paleando-live.js').read_text()"
 
