@@ -102,6 +102,7 @@ export function mountDiary({root,onAction,signPhoto,onPhoto,onFavorite}){
   if(b.id==='reset-filters'){month='';photos=false;thisMonth=false;change();}
   if(b.id==='diary-retry')onAction('sync');
   if(b.matches('[data-diary-more]')){remember();returnFocus=b.dataset.diaryMore;onAction('menu',b.dataset.diaryMore);}
+  if(b.matches('[data-diary-favorite]')){ev.preventDefault();ev.stopPropagation();}
   if(b.matches('[data-diary-favorite]')&&!busyId){const id=b.dataset.diaryFavorite,version=epoch;busyId=id;b.disabled=true;try{await onFavorite(id);}finally{if(version===epoch){busyId=null;render(all,{practice,loading,error});visibleRow(id)?.querySelector('[data-diary-favorite]')?.focus({preventScroll:true});}}}
   const slide=b.closest('.diary-slide');if(slide&&b.matches('.diary-photo-retry')){delete slide.dataset.loaded;slide.querySelector('.diary-photo-status').textContent='Cargando fotografía privada…';b.hidden=true;loadPicture(slide);}else if(slide&&b.matches('.diary-open-photo')){remember();onPhoto(slide.dataset.diaryPath,slide.dataset.photoName);}
  });

@@ -1,9 +1,9 @@
 import {toBeaufort,beaufortMarkup} from './beaufort.js?v=0.13.0';
-import {topMapInset,bottomMapInset,rightMapInset} from './map-legend.js?v=0.16.0';
+import {topMapInset,bottomMapInset,rightMapInset} from './map-legend.js?v=0.19.0';
 import {mountSeaBands} from './coast-views.js?v=0.12.0';
 import coast from './coast-data.js?v=0.3.0';
-import {CoastalRouter} from './coastal.js?v=0.3.0';
-import {landMask} from './wave-field.js?v=0.10.1';
+import {CoastalRouter} from './coastal.js?v=0.19.0';
+import {landMask} from './wave-field.js?v=0.19.0';
 import {distance,validPoint,escapeHtml as esc,number} from './core.js';
 const labels=['norte','nornordeste','estenordeste','este','estesudeste','sursudeste','sur','sursuroeste','oestesuroeste','oeste','oestenoroeste','nornoroeste'];
 const centre=[39.97,4.08],rad=Math.PI/180,offshoreLimit=Math.sin(15*rad);
@@ -36,3 +36,4 @@ export function mountZoneAnalysis({root,map,checkbox,getTime,getPlaces,onPlan,ca
 
  return {setSavedLimits(limits={}){const key=JSON.stringify(limits);if(limitsDirty||key===savedLimitsKey)return;savedLimitsKey=key;for(const name of ['wind','gust','wave'])$('#zones-'+name).value=limits[name]??'';},setViewVisible,timeChanged(t){if(!enabled)return;const selected=parseInput($('#zones-start').value);if(selected&&Math.abs(selected-t)<60)return;$('#zones-start').value=formatInput(t);stale('Hora del mapa cambiada. Pulsa Analizar para actualizar las zonas.');},reset({clearPreferences=false}={}){if(clearPreferences){limitsDirty=false;savedLimitsKey='';$('#zones-form').reset();$('#zones-start').value=formatInput(Math.max(getTime(),Date.now()/1000));}enabled=false;checkbox.checked=false;setViewVisible(false);stale('');},isEnabled:()=>enabled};
 }
+

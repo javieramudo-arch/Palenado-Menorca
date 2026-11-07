@@ -1,5 +1,5 @@
 import data from './coast-data.js?v=0.3.0';
-import {CoastalRouter} from './coastal.js?v=0.3.0';
+import {CoastalRouter} from './coastal.js?v=0.19.0';
 import {distance,validPoint} from './core.js?v=0.3.0';
 
 // Store intervals on reference edges, not kilometres summed per outing.
@@ -36,3 +36,4 @@ let reference;
 export function coastProgress(entries){reference??=new CoastProgress(data);return reference.measure(entries);}
 
 export function pendingCoast(entries){reference??=new CoastProgress(data);const byEdge=new Map();for(const e of entries.filter(e=>e.kind==='trip'&&!e.deleted_at))for(const[id,a,b]of reference.coverage(e.data)){if(!byEdge.has(id))byEdge.set(id,[]);byEdge.get(id).push([a,b]);}const result=[];for(const edge of reference.edges){let end=0;const lerp=t=>[edge.A[0]+(edge.B[0]-edge.A[0])*t,edge.A[1]+(edge.B[1]-edge.A[1])*t];for(const[a,b]of (byEdge.get(edge.id)||[]).sort((a,b)=>a[0]-b[0])){if(a>end)result.push([lerp(end),lerp(a)]);end=Math.max(end,b);}if(end<1)result.push([lerp(end),lerp(1)]);}return result;}
+

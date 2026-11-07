@@ -1,15 +1,15 @@
 import {progressMarkup} from './progress.js?v=0.18.0';
 import {mountRouteSearch} from './route-search.js?v=0.18.0';
 import {installDemoImages} from './demo-images.js?v=0.18.0';
-import {mountDiary} from './diary.js?v=0.18.0';
+import {mountDiary} from './diary.js?v=0.19.0';
 import {mountDashboard,icon} from './dashboard.js?v=0.18.1';
 import {mountSeaUI} from './sea-ui.js?v=0.15.0';
 import {weatherChart,bindChartKeyboard} from './weather-chart.js?v=0.14.0';
 import {beaufortMarkup,beaufortText} from './beaufort.js?v=0.13.0';
-import {topMapInset,bottomMapInset,rightMapInset,pendingCoastColor} from './map-legend.js?v=0.16.0';
+import {topMapInset,bottomMapInset,rightMapInset,pendingCoastColor} from './map-legend.js?v=0.19.0';
 import {CoastViews} from './coast-views.js?v=0.12.1';
 import {mountZoneAnalysis,statusInfo} from './zone-analysis.js?v=0.16.0';
-import {mountWind} from './wind-field.js?v=0.16.0';
+import {mountWind} from './wind-field.js?v=0.19.0';
 import {repeatAdventure,filterTrips,periodSummary,routeSamples,zone,pendingRoute} from './journey-tools.js?v=0.12.0';
 import {recoveryLocation,requestPasswordReset,updateRecoveredPassword} from './password-recovery.js?v=0.12.0';
 import {removeDraftItem,restoreDraftItem,conflictFields,mergeConflict,conflictSummary} from './edit-safety.js?v=0.12.0';
@@ -20,7 +20,7 @@ import {fetchForecastRange,availableDays,dayHours,sampleForecast,dayKey,availabl
 import {setupInstallation} from './install.js?v=0.12.0';
 import {coastProgress,pendingCoast} from './coast-progress.js?v=0.12.0';
 import {categories,symbols,escapeHtml as esc,validPoint,tripKm,aggregate,parseGPX,exportGPX,number,today,validateEntry,distance,measuredTripKm} from './core.js?v=0.12.0';
-import {appendCoastalPoint,removeCoastalPoint,coastalPath,coastalSource} from './coastal.js?v=0.12.0';
+import {appendCoastalPoint,removeCoastalPoint,coastalPath,coastalSource} from './coastal.js?v=0.19.0';
 import {getClient,loadEntries,saveEntry,signedPhoto,uploadPhoto} from './backend.js?v=0.12.0';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const recoveryLink=recoveryLocation(location);let recoveryOwner=null;
@@ -64,8 +64,8 @@ function renderProgress(){const realEntries=practice?practice.entries:entries;$(
 function edit(id){if(!requireAccount())return;const e=entries.find(e=>e.id===id);if(!e)return;if(draft){readFormIfOpen();if(draft.id!==id)toast('Resuelve el borrador abierto antes de editar otra salida.');showEditor();return;}draft=structuredClone(e);if(practice)practice.beforeEdit=JSON.stringify(draft);stashDraft();showEditor();guideAdvance('edit');}
 function detail(id){viewAdventure(id);guideAdvance('detail');}
 
-async function deleteEntry(id){if(saving)return;if(undoEntry){toast('Primero deshaz la eliminación anterior o espera a que termine su plazo.',true);return;}const e=entries.find(e=>e.id===id);if(!e)return;if(draft){toast('Resuelve el borrador abierto antes de eliminar elementos.');return;}if(!confirm(`¿Eliminar «${e.title}»? Dejará de aparecer y se recalculará el progreso. Las fotografías no se borrarán del almacenamiento. Puedes deshacer durante 30 segundos.`))return;saving=true;try{const saved=await persist({...e,deleted_at:new Date().toISOString()});undoEntry={id:saved.id,until:Date.now()+30000};closeDialogs();render();toast(`«${e.title}» eliminado.`,true);clearTimeout(undoTimer);undoTimer=practice?null:setTimeout(()=>{undoEntry=null;$('#toast').hidden=true;},30000);guideAdvance('delete');}catch(e){toast(errorText(e));}finally{saving=false;}}
-async function undo(){if(!undoEntry||saving)return;if(!practice&&Date.now()>undoEntry.until){undoEntry=null;toast('Ha terminado el plazo de recuperación.');return;}saving=true;try{const e=entries.find(e=>e.id===undoEntry.id);await persist({...e,deleted_at:null});undoEntry=null;clearTimeout(undoTimer);render();toast('Aventura recuperada.');guideAdvance('undo');}catch(e){toast(errorText(e),true);}finally{saving=false;}}
+async function deleteEntry(id){if(saving)return;if(undoEntry){toast('Primero deshaz la eliminación anterior o espera a que termine su plazo.',true);return;}const e=entries.find(e=>e.id===id);if(!e)return;const deletedDraft=draft?.id===id?structuredClone(draft):null;if(!confirm(`¿Eliminar «${e.title}»?${deletedDraft?' También se retirará su borrador sin guardar; puedes recuperarlo con Deshacer.':''} Dejará de aparecer y se recalculará el progreso. Las fotografías no se borrarán del almacenamiento. Puedes deshacer durante 30 segundos.`))return;saving=true;try{const saved=await persist({...e,deleted_at:new Date().toISOString()});undoEntry={id:saved.id,until:Date.now()+30000,removedDraft:deletedDraft};if(deletedDraft&&draft?.id===id){draft=null;draftItemUndos=[];stashDraft();drawDraft();}closeDialogs();render();toast(`«${e.title}» eliminado.`,true);clearTimeout(undoTimer);undoTimer=practice?null:setTimeout(()=>{undoEntry=null;$('#toast').hidden=true;},30000);guideAdvance('delete');}catch(e){toast(errorText(e));}finally{saving=false;}}
+async function undo(){if(!undoEntry||saving)return;if(!practice&&Date.now()>undoEntry.until){undoEntry=null;toast('Ha terminado el plazo de recuperación.');return;}saving=true;try{const e=entries.find(e=>e.id===undoEntry.id);const saved=await persist({...e,deleted_at:null});if(undoEntry.removedDraft&&!draft){draft={...undoEntry.removedDraft,revision:saved.revision};stashDraft();drawDraft();}undoEntry=null;clearTimeout(undoTimer);render();toast('Aventura recuperada.');guideAdvance('undo');}catch(e){toast(errorText(e),true);}finally{saving=false;}}
 function showPlans(){guideAdvance('plans');closeDialogs();content('Aventuras por venir',`<p class="muted">Las rutas pendientes no suman kilómetros realizados.</p><button class="button primary" data-action="plan">＋ Planificar ruta</button> <button class="button secondary" data-action="compare">Comparar rutas</button><div class="card-grid" style="margin-top:20px">${active('plan').map(entryCard).join('')||empty('Un mar de posibilidades','Prepara una ruta y guárdala para otro día.','plan')}</div>`);}
 function markerForm(point,route=false,existing=null){content(existing?'Editar lugar':route?'Un detalle para recordar':'Nuevo lugar',`<form id="place-form"><label>Nombre<input name="title" maxlength="180" required value="${esc(existing?.title||'')}" placeholder="Acceso junto al embarcadero"></label><label>Categoría<select name="category">${Object.entries(categories).map(([k,v])=>`<option value="${k}" ${existing?.data.category===k?'selected':''}>${v}</option>`).join('')}</select></label><div class="form-row"><label>Latitud<input name="lat" type="number" step="any" min="-90" max="90" required value="${point?.[0]??''}"></label><label>Longitud<input name="lng" type="number" step="any" min="-180" max="180" required value="${point?.[1]??''}"></label></div><label>Notas<textarea name="notes">${esc(existing?.data.notes||'')}</textarea></label><p id="place-error" role="status"></p><button class="button primary">Guardar ${route?'marcador':'lugar'}</button></form>`);$('#place-form').onsubmit=async ev=>{ev.preventDefault();const form=ev.target;if(saving)return;const p=[Number(form.lat.value),Number(form.lng.value)];if(!validPoint(p))return;const data={...existing?.data,point:p,category:form.category.value,notes:form.notes.value},title=form.elements.title.value.trim();if(!title)return;if(route){draft.data.markers.push({id:crypto.randomUUID(),title,...data});stashDraft();showEditor();guideAdvance('marker');return;}if(!requireAccount())return;saving=true;try{await persist({...(existing||{}),id:existing?.id||crypto.randomUUID(),kind:'place',title,data});render();showPlaces();}catch(e){$('#place-error').textContent=errorText(e);}finally{saving=false;}};}
 function allPlaces(){return [...active('place').map(e=>({...e.data,id:e.id,title:e.title})),...active('trip').flatMap(e=>(e.data.markers||[]).map(m=>({...m,routeId:e.id})))];}
@@ -207,8 +207,8 @@ function initDiary(){
  diaryUI=mountDiary({root:$('#view-diario'),signPhoto:signedPhoto,onPhoto:showPhoto,onAction(action,id){if(action==='sync')sync();else if(action==='menu')diaryMenu(id);},async onFavorite(id){
   if(!requireAccount()||saving)return;
   const e=entries.find(e=>e.id===id&&e.kind==='trip'&&!e.deleted_at);if(!e)return;
-  if(draft){readFormIfOpen();toast('Conserva o descarta el borrador antes de cambiar favoritas.');showEditor();return;}
-  saving=true;try{await persist({...e,data:{...e.data,favorite:!e.data.favorite}});render();}catch(error){toast(errorText(error));}finally{saving=false;}
+  readFormIfOpen();
+  saving=true;try{const saved=await persist({...e,data:{...e.data,favorite:!e.data.favorite}});if(draft?.id===id){draft.revision=saved.revision;draft.data.favorite=saved.data.favorite;stashDraft();}render();}catch(error){toast(errorText(error));}finally{saving=false;}
  }});
 }
 function diaryMenu(id){

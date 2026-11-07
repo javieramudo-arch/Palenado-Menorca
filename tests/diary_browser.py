@@ -94,7 +94,8 @@ def actions_and_practice(page,errors,width):
  assert download.value.suggested_filename=='paleando-diary-00.gpx';h.close(page)
  menu(page,'diary-00');page.locator('#content-body [data-action=edit]').click();page.locator('[name=notes]').fill('Borrador a proteger');page.locator('#close-editor').click()
  menu(page,'diary-00');page.locator('#content-body [data-action=edit]').click();assert page.locator('[name=notes]').input_value()=='Borrador a proteger';page.locator('#close-editor').click()
- first.locator('[data-diary-favorite]').click();assert page.locator('#editor-dialog').is_visible();assert page.locator('[name=notes]').input_value()=='Borrador a proteger';assert page.evaluate("testRows().find(e=>e.id==='diary-00').data.favorite") is False
+ first.locator('[data-diary-favorite]').click();page.wait_for_function("testRows().find(e=>e.id==='diary-00').data.favorite===true");assert not page.locator('#editor-dialog').is_visible();assert page.evaluate("seaTest.state().draft.data.notes")=='Borrador a proteger'
+ menu(page,'diary-00');page.locator('#content-body [data-action=edit]').click();assert page.locator('[name=notes]').input_value()=='Borrador a proteger'
  page.locator('#discard-draft').click();menu(page,'diary-00');page.locator('#content-body [data-action=repeat]').click();assert page.locator('[name=duration]').input_value()=='';assert page.evaluate('seaTest.state().draft.id')!='diary-00';assert page.evaluate("seaTest.state().draft.data.customField")=='Conservar siempre';page.locator('#discard-draft').click()
  menu(page,'diary-01');page.locator('#content-body [data-action=delete]').click();page.wait_for_function("!!testRows().find(e=>e.id==='diary-01').deleted_at");assert page.locator('[data-diary-id=diary-01]').count()==0
  page.locator('#undo').click();page.wait_for_function("!testRows().find(e=>e.id==='diary-01').deleted_at");assert page.locator('[data-diary-id=diary-01]').count()==1
@@ -119,3 +120,4 @@ try:
  assert not failures,failures
  print('DIARY_BROWSER_PASS: filters/date selection/two views, missing real duration, lazy private galleries/error retry, exact scroll and photo restoration, unique progressive feed, favorite/revision/metadata, GPX/edit/repeat/delete/undo, draft and practice/account isolation. Real Chrome mobile/desktop; account/photos/weather simulated, not physical Android.',flush=True)
 finally:h.server.shutdown()
+

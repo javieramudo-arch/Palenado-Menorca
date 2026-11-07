@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {coastalPath,appendCoastalPoint,removeCoastalPoint} from '../coastal.js';
+import {CoastalRouter,coastalPath,appendCoastalPoint,removeCoastalPoint} from '../coastal.js';
 import {distance,tripKm,exportGPX} from '../core.js';
 import data from '../coast-data.js';
 const macarella=[39.93805,3.93665],turqueta=[39.93168,3.91459],mitjana=[39.93359,3.97182];
@@ -19,4 +19,12 @@ test('distant and identical points fail without drawing a straight fallback',()=
 });
 test('coastal distance is exported and GPX distance remains unaltered',()=>{
  const d={...coastalPath([macarella,turqueta]),source:'coastal',roundtrip:false};const xml=exportGPX({title:'Costa',data:d});assert.equal((xml.match(/<trkpt /g)||[]).length,d.points.length);assert.equal(tripKm({points:[macarella,turqueta],source:'gpx',roundtrip:true}),distance([macarella,turqueta]));
+});
+
+
+test('closed coastline always selects the shorter arc in either direction, even with a legacy alternative flag',()=>{
+ const nodes=[[40,4],[40,4.001],[40.001,4.001],[40.001,4]],edges=[[0,1],[1,2],[2,3],[3,0]],router=new CoastalRouter({nodes,edges});
+ const direct=distance([nodes[0],nodes[1]])*1000;
+ for(const [a,b] of [[nodes[0],nodes[1]],[nodes[1],nodes[0]]]){assert(Math.abs(router.route(a,b).metres-direct)<.01);assert(Math.abs(router.route(a,b,true).metres-direct)<.01);}
+ const interior=router.route([40,4.0002],[40,4.0008]);assert(Math.abs(interior.metres-direct*.6)<.01);
 });

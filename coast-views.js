@@ -1,4 +1,4 @@
-import {landMask} from './wave-field.js?v=0.10.1';
+import {landMask} from './wave-field.js?v=0.19.0';
 export class CoastViews{
  constructor(onChange=()=>{}){this.stack=['routes'];this.onChange=onChange;}
  get current(){return this.stack.at(-1);}
@@ -14,3 +14,4 @@ export function mountSeaBands(map,{pane='zoneAnalysis'}={}){const canvas=documen
  map.on('moveend zoomend resize',draw);
  return {setData(next){data=next;draw();},setVisible(value){if(value===visible)return;visible=value;canvas.hidden=!value;draw();},destroy(){map.off('moveend zoomend resize',draw);canvas.remove();}};
 }
+

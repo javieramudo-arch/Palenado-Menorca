@@ -1,6 +1,6 @@
 import {aggregate,measuredTripKm,number,escapeHtml as esc} from './core.js?v=0.12.0';
 import {durationText} from './route-features.js?v=0.12.0';
-import {routePreview,savedDate,recordedMinutes} from './diary.js?v=0.18.0';
+import {routePreview,savedDate,recordedMinutes} from './diary.js?v=0.19.0';
 export function progressMarkup(entries,coast,now=new Date()){
  const year=String(now.getFullYear()),annual=aggregate(entries,year),all=aggregate(entries),trips=entries.filter(e=>e.kind==='trip'&&!e.deleted_at),recent=[...trips].sort((a,b)=>String(b.data?.date||'').localeCompare(String(a.data?.date||''))).slice(0,4),goal=entries.find(e=>e.kind==='goal'&&!e.deleted_at&&String(e.data?.year)===year),target=Number(goal?.data?.target),hasGoal=Number.isFinite(target)&&target>0,goalPercent=hasGoal?Math.min(100,annual.km/target*100):0,months=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],max=Math.max(1,...annual.months),longest=Math.max(0,...trips.map(e=>measuredTripKm(e.data)||0)),percent=Math.max(0,Math.min(100,coast.percent||0));
  const metric=(value,label)=>`<div><strong>${value}</strong><span>${label}</span></div>`;
