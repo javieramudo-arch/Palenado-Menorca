@@ -73,7 +73,7 @@ export function mountDashboard(api){
 
 // Only allocates screen space. It never changes geographic data or forecast time.
 export function mapViewportLayout({height,mapTop,navHeight,actionHeight,sun=false,focused=false}){
- const available=Math.floor(height-mapTop-navHeight-actionHeight-12),vertical=sun?326:306;
+ const available=Math.floor(height-mapTop-navHeight-actionHeight-12),vertical=sun?382:358;
  const desired=focused?Math.min(480,Math.max(310,height*.55)):Math.min(480,available),compact=desired<vertical;
  return {height:Math.max(compact?(sun?216:196):vertical,desired),compact,available};
 }
@@ -83,7 +83,7 @@ function mountMapLayout(api){
   const viewport=window.visualViewport,height=viewport?.height||window.innerHeight,focused=!document.querySelector('#adventure-panel').hidden||!document.querySelector('#draw-bar').hidden;
   const next=mapViewportLayout({height,mapTop:wrap.getBoundingClientRect().top+window.scrollY,navHeight:nav.getBoundingClientRect().height,actionHeight:actions.getBoundingClientRect().height,sun:document.body.classList.contains('sun-mode'),focused});
   const value=Math.round(next.height)+'px',changed=wrap.style.getPropertyValue('--map-fit-height')!==value||wrap.classList.contains('compact-map-controls')!==next.compact;
-  wrap.style.setProperty('--map-fit-height',value);wrap.classList.toggle('compact-map-controls',next.compact);if(changed)api.onLayout?.();
+  wrap.style.setProperty('--map-fit-height',value);wrap.classList.toggle('compact-map-controls',next.compact);wrap.classList.toggle('tight-map-controls',next.height<250);if(changed)api.onLayout?.();
  }
  function schedule(){if(!frame)frame=requestAnimationFrame(fit);}
  const resize=new ResizeObserver(schedule);for(const el of [document.querySelector('#summary-carousel'),document.querySelector('.topbar'),document.querySelector('.sync-line'),actions,nav])resize.observe(el);
@@ -91,3 +91,4 @@ function mountMapLayout(api){
  window.addEventListener('resize',schedule);window.visualViewport?.addEventListener('resize',schedule);wrap.addEventListener('maplegendchange',schedule);schedule();
  return {schedule,destroy(){cancelAnimationFrame(frame);resize.disconnect();mutation.disconnect();window.removeEventListener('resize',schedule);window.visualViewport?.removeEventListener('resize',schedule);wrap.removeEventListener('maplegendchange',schedule);}};
 }
+

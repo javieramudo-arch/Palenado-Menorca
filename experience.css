@@ -3,3 +3,11 @@
 @media(max-width:390px){.progress-hero{flex-direction:column;align-items:start}.progress-ring{align-self:center}.progress-chart{gap:3px}}
 /* Match the map container to its geographic preview at every card width. */
 .diary-preview{height:auto;aspect-ratio:320/132}.compact-map-controls:not(.fullscreen-map) #route-search-button{grid-column:2}
+
+@media(max-width:700px){
+ .map-wrap.tight-map-controls:not(.fullscreen-map){--map-controls-width:148px}
+ .sun-mode .map-wrap.tight-map-controls:not(.fullscreen-map){--map-controls-width:160px}
+ .tight-map-controls:not(.fullscreen-map) .map-actions{grid-template-columns:repeat(3,44px)}
+ .sun-mode .tight-map-controls:not(.fullscreen-map) .map-actions{grid-template-columns:repeat(3,48px)}
+ .tight-map-controls:not(.fullscreen-map) #route-search-button{grid-column:3;grid-row:2}
+}
