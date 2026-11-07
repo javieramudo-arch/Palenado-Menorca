@@ -73,7 +73,9 @@ def photos_and_return(page,errors,width):
  assert page.locator('#trip-list .diary-card').count()>=24
  assert abs(page.locator('[data-diary-id=diary-18]').bounding_box()['y']-before)<3
  ids=page.locator('#trip-list .diary-card').evaluate_all('els=>els.map(e=>e.dataset.diaryId)');assert len(ids)==len(set(ids))
- page.locator('#diary-load-more').click() if page.locator('#diary-load-more').is_visible() else None
+ # Avoid scrolling the sentinel into view between checking and clicking: the
+ # observer may finish loading and hide the button during Playwright's action.
+ page.locator('#diary-load-more').evaluate('b=>{if(!b.hidden)b.click()}')
  assert page.locator('#trip-list .diary-card').count()==36
  assert page.locator('#diary-feed-end').is_visible()
  # Reset account-local state, clear private DOM, retain no signed URLs in browser storage.
